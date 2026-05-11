@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alexander AI — AI Agent Support & Monitoring</title>
+  <meta name="description" content="Keep your AI agents running 24/7. Alexander AI monitors your Hermes and Agent Zero installations, catches errors before your customers do, and lets you fix problems remotely." />
+  <link rel="icon" href="/favicon.svg" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #060b18;
+      --panel:   #0d1b2a;
+      --card:    #112240;
+      --border:  #1a3a5c;
+      --text:    #e0f7fa;
+      --muted:   #5d9bb8;
+      --accent:  #00f0ff;
+      --accent2: #3050FF;
+      --success: #64ffda;
+      --warning: #ff6b35;
+      --gold:    #FFD700;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ──────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6,11,24,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: 14px; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--accent); text-decoration: none; }
+    .nav-cta {
+      background: var(--accent);
+      color: #000 !important;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.85; text-decoration: none !important; }
+
+    /* ── SECTIONS ─────────────────────────────────────────────────────── */
+    section { padding: 96px 5%; }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 40px;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0,240,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,240,255,0.08);
+      border: 1px solid rgba(0,240,255,0.25);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .hero-badge span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); text-decoration: none; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); text-decoration: none; }
+
+    /* Dashboard preview */
+    .hero-preview {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 1px rgba(0,240,255,0.2), 0 0 60px rgba(0,240,255,0.04);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .preview-bar {
+      background: #0a1628;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+    .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #febc2e; }
+    .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
+    .preview-url { flex: 1; background: #060b18; border-radius: 5px; padding: 4px 12px; font-size: 12px; color: var(--muted); margin: 0 12px; }
+    .preview-body {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .preview-stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .preview-stat-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .preview-stat-val { font-size: 24px; font-weight: 700; }
+    .preview-table {
+      grid-column: 1 / -1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .preview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px 80px;
+      padding: 10px 16px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .preview-row:last-child { border-bottom: none; }
+    .preview-row.header { background: #0a1628; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+    .chip-on { background: rgba(100,255,218,0.12); color: var(--success); }
+    .chip-off { background: rgba(93,155,184,0.1); color: var(--muted); }
+    .chip-err { background: rgba(255,82,82,0.12); color: #ff5252; }
+
+    /* ── LOGOS / TRUST ────────────────────────────────────────────────── */
+    #trust {
+      padding: 32px 5%;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    #trust p { font-size: 13px; color: var(--muted); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .trust-agents {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .trust-agent {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .trust-agent:hover { opacity: 1; }
+    .trust-agent-icon { width: 32px; height: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .trust-agent-name { font-size: 14px; font-weight: 600; color: var(--text); }
+
+    /* ── FEATURES ─────────────────────────────────────────────────────── */
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 60px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-sub, rgba(0,240,255,0.08));
+      border: 1px solid rgba(0,240,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────────────────── */
+    #how { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+      position: relative;
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 0 20px rgba(0,240,255,0.15);
+    }
+    .step h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PRICING ──────────────────────────────────────────────────────── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.featured { border-color: var(--accent); background: var(--card); box-shadow: 0 0 40px rgba(0,240,255,0.08); }
+    .price-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .price-tier { font-size: 13px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .price-amount { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .price-amount sup { font-size: 20px; vertical-align: super; }
+    .price-amount sub { font-size: 14px; color: var(--muted); font-weight: 400; }
+    .price-desc { color: var(--muted); font-size: 14px; margin: 12px 0 24px; }
+    .price-features { list-style: none; }
+    .price-features li {
+      font-size: 14px;
+      color: var(--text);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-features li:last-child { border-bottom: none; }
+    .price-features li::before { content: "✓"; color: var(--success); font-weight: 700; flex-shrink: 0; }
+    .price-cta {
+      display: block;
+      text-align: center;
+      margin-top: 28px;
+      padding: 12px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+    .price-cta-primary { background: var(--accent); color: #000; }
+    .price-cta-primary:hover { opacity: 0.85; text-decoration: none; }
+    .price-cta-ghost { border: 1px solid var(--border); color: var(--text); }
+    .price-cta-ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────────────────── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .testimonial {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .testimonial-text { font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 20px; font-style: italic; }
+    .testimonial-text::before { content: '"'; color: var(--accent); font-size: 24px; line-height: 0; vertical-align: -8px; margin-right: 4px; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .testimonial-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 14px; }
+    .testimonial-name { font-size: 14px; font-weight: 600; }
+    .testimonial-role { font-size: 12px; color: var(--muted); }
+    .stars { color: var(--gold); font-size: 13px; margin-bottom: 12px; }
+
+    /* ── CTA BANNER ───────────────────────────────────────────────────── */
+    #cta-banner {
+      text-align: center;
+      background: linear-gradient(135deg, #060b18 0%, #0d1b35 50%, #060b18 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    #cta-banner::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(0,240,255,0.07) 0%, transparent 70%);
+    }
+    #cta-banner .container { position: relative; }
+    #cta-banner h2 { margin-bottom: 16px; }
+    #cta-banner p { color: var(--muted); font-size: 17px; max-width: 480px; margin: 0 auto 40px; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────── */
+    footer {
+      padding: 40px 5%;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+    footer .logo svg { width: 24px; height: 24px; }
+    footer p { color: var(--muted); font-size: 13px; }
+    footer nav { display: flex; gap: 20px; }
+    footer nav a { color: var(--muted); font-size: 13px; transition: color 0.15s; }
+    footer nav a:hover { color: var(--accent); text-decoration: none; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .preview-body { grid-template-columns: repeat(2, 1fr); }
+      .preview-table, .preview-row { display: none; }
+      section { padding: 64px 5%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E30AA"/>
+        <stop offset="50%" stop-color="#3050FF"/>
+        <stop offset="100%" stop-color="#5070FF"/>
+      </linearGradient></defs>
+      <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#lg)"/>
+      <rect x="47" y="22" width="6" height="56" rx="3" fill="#FFD700"/>
+      <path d="M 35 30 Q 50 22, 50 30" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 65 30 Q 50 22, 50 30" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 38 58 Q 30 50, 38 42 Q 46 34, 50 38" stroke="#E8ECFF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M 62 58 Q 70 50, 62 42 Q 54 34, 50 38" stroke="#E8ECFF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="50" cy="22" r="5" fill="#FFD700"/>
+    </svg>
+    Alexander AI
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/dashboard">Login</a>
+    <a href="#pricing" class="nav-cta">Get Started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span> Live agent monitoring — always on
+    </div>
+    <h1>Your customers' AI agents,<br><span class="highlight">always running.</span></h1>
+    <p class="hero-sub">
+      Alexander AI keeps your Hermes and Agent Zero deployments healthy 24/7.
+      Catch errors before your customers do. Fix problems remotely in seconds.
+    </p>
+    <div class="hero-ctas">
+      <a href="#pricing" class="btn-primary">Start Monitoring Free →</a>
+      <a href="#how" class="btn-ghost">See How It Works</a>
+    </div>
+
+    <!-- Dashboard Mock -->
+    <div class="hero-preview">
+      <div class="preview-bar">
+        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+        <div class="preview-url">alexanderai.site/clients</div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-stat">
+          <div class="preview-stat-label">Active Clients</div>
+          <div class="preview-stat-val" style="color:var(--accent)">12</div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Machines Online</div>
+          <div class="preview-stat-val" style="color:var(--success)">9</div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Errors (24h)</div>
+          <div class="preview-stat-val" style="color:#ff5252">2</div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Uptime Avg</div>
+          <div class="preview-stat-val" style="color:var(--gold)">98%</div>
+        </div>
+        <div class="preview-table">
+          <div class="preview-row header">
+            <span>Client</span><span>Agent</span><span>Status</span><span>Last Seen</span>
+          </div>
+          <div class="preview-row">
+            <span>Mark T.</span><span style="color:var(--muted);font-size:11px">Hermes</span>
+            <span><div class="chip chip-on">Online</div></span>
+            <span style="color:var(--muted);font-size:11px">2s ago</span>
+          </div>
+          <div class="preview-row">
+            <span>Lisa M.</span><span style="color:var(--muted);font-size:11px">Agent Zero</span>
+            <span><div class="chip chip-err">Error</div></span>
+            <span style="color:var(--muted);font-size:11px">1m ago</span>
+          </div>
+          <div class="preview-row">
+            <span>David K.</span><span style="color:var(--muted);font-size:11px">Hermes</span>
+            <span><div class="chip chip-on">Online</div></span>
+            <span style="color:var(--muted);font-size:11px">8s ago</span>
+          </div>
+          <div class="preview-row">
+            <span>Sarah J.</span><span style="color:var(--muted);font-size:11px">Agent Zero</span>
+            <span><div class="chip chip-off">Offline</div></span>
+            <span style="color:var(--muted);font-size:11px">2h ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div id="trust">
+  <p>Built for teams deploying</p>
+  <div class="trust-agents">
+    <div class="trust-agent">
+      <div class="trust-agent-icon">🪽</div>
+      <span class="trust-agent-name">Hermes Workspace</span>
+    </div>
+    <div class="trust-agent">
+      <div class="trust-agent-icon">⚡</div>
+      <span class="trust-agent-name">Agent Zero</span>
+    </div>
+    <div class="trust-agent">
+      <div class="trust-agent-icon">🐍</div>
+      <span class="trust-agent-name">Python Agents</span>
+    </div>
+    <div class="trust-agent">
+      <div class="trust-agent-icon">🐳</div>
+      <span class="trust-agent-name">Docker Deployments</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2>Everything you need to support your clients</h2>
+    <p class="section-sub">Stop flying blind. Know exactly what's happening on every customer machine the moment something goes wrong.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔴</div>
+        <h3>Real-Time Error Detection</h3>
+        <p>The silent background agent catches crashes, API failures, and startup errors the instant they happen — before your customer even notices.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⌨️</div>
+        <h3>Remote Terminal Access</h3>
+        <p>Run diagnostic commands on any online machine directly from your dashboard. Check logs, restart services, and fix issues without touching the customer's computer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💓</div>
+        <h3>Live Heartbeat Monitoring</h3>
+        <p>Every agent phones home every 30 seconds. See exactly who's online, who's offline, and who needs attention at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🖥</div>
+        <h3>Machine Health Dashboard</h3>
+        <p>Disk space, OS version, Docker status, agent version — all your client machine specs in one place, always up to date.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔑</div>
+        <h3>One-Click Client Onboarding</h3>
+        <p>Create a client, grab their install token, and share one script. The agent installs itself and starts reporting in under 60 seconds.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡</div>
+        <h3>Secure & Silent</h3>
+        <p>The agent runs invisibly in the background. Only whitelisted diagnostic commands are permitted — never destructive operations. Your customers stay in control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 style="text-align:center;margin-bottom:16px">Up and running in minutes</h2>
+    <p class="section-sub" style="margin:0 auto 60px;text-align:center">No servers to manage. No complex setup. Just install, connect, and monitor.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Add Your Client</h3>
+        <p>Create a client profile in your dashboard. You get a unique install token tied to that customer.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Share the Script</h3>
+        <p>Send your customer the one-line install command. It bundles with your existing Hermes or Agent Zero install.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Agent Goes Live</h3>
+        <p>The liberty agent installs silently, auto-starts on boot, and connects to your dashboard within seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Monitor & Fix</h3>
+        <p>Watch the live feed. When something breaks, remote in, run diagnostics, and push a fix — all without leaving your dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-label">Early Feedback</div>
+    <h2>What AI resellers are saying</h2>
+    <p class="section-sub">From the people who deploy AI agents to real customers every day.</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">I used to spend hours on calls with customers trying to diagnose Docker issues. Now I can see the problem and fix it before they even message me.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
+          <div>
+            <div class="testimonial-name">Marcus R.</div>
+            <div class="testimonial-role">AI Solutions Reseller</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">The install took me 10 minutes to set up for all 8 of my clients. The peace of mind is worth every penny.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">T</div>
+          <div>
+            <div class="testimonial-name">Tanya W.</div>
+            <div class="testimonial-role">Freelance AI Consultant</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">Caught a disk-full error on a client machine at 2am. Fixed it remotely before they woke up. My clients think I'm a wizard.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">J</div>
+          <div>
+            <div class="testimonial-name">James F.</div>
+            <div class="testimonial-role">AI Agency Owner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container" style="text-align:center">
+    <div class="section-label">Pricing</div>
+    <h2>Simple, honest pricing</h2>
+    <p class="section-sub" style="margin:0 auto 60px">No hidden fees. Scale as you grow. Cancel anytime.</p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount"><sup>$</sup>0<sub>/mo</sub></div>
+        <p class="price-desc">Perfect for trying it out with your first few clients.</p>
+        <ul class="price-features">
+          <li>Up to 3 clients</li>
+          <li>Up to 5 machines</li>
+          <li>Error & heartbeat monitoring</li>
+          <li>Remote command terminal</li>
+          <li>7-day event history</li>
+        </ul>
+        <a href="/dashboard" class="price-cta price-cta-ghost">Get Started Free</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Professional</div>
+        <div class="price-amount"><sup>$</sup>49<sub>/mo</sub></div>
+        <p class="price-desc">For resellers actively growing their client base.</p>
+        <ul class="price-features">
+          <li>Unlimited clients</li>
+          <li>Unlimited machines</li>
+          <li>Error & heartbeat monitoring</li>
+          <li>Remote command terminal</li>
+          <li>90-day event history</li>
+          <li>Email alerts on errors</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="mailto:jay@alexanderai.site?subject=Alexander AI Pro" class="price-cta price-cta-primary">Get Professional →</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-tier">Agency</div>
+        <div class="price-amount"><sup>$</sup>149<sub>/mo</sub></div>
+        <p class="price-desc">White-label for agencies managing large client fleets.</p>
+        <ul class="price-features">
+          <li>Everything in Professional</li>
+          <li>White-label dashboard</li>
+          <li>Custom domain</li>
+          <li>API access</li>
+          <li>Dedicated onboarding call</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="mailto:jay@alexanderai.site?subject=Alexander AI Agency" class="price-cta price-cta-ghost">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="cta-banner">
+  <div class="container">
+    <h2>Ready to stop flying blind?</h2>
+    <p>Join resellers who never get a "my AI is broken" call anymore.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="/dashboard" class="btn-primary">Open Your Dashboard →</a>
+      <a href="mailto:jay@alexanderai.site" class="btn-ghost">Talk to Jay</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+      <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E30AA"/>
+        <stop offset="50%" stop-color="#3050FF"/>
+        <stop offset="100%" stop-color="#5070FF"/>
+      </linearGradient></defs>
+      <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#lg2)"/>
+      <rect x="47" y="22" width="6" height="56" rx="3" fill="#FFD700"/>
+      <circle cx="50" cy="22" r="5" fill="#FFD700"/>
+    </svg>
+    Alexander AI
+  </div>
+  <p style="color:var(--muted);font-size:13px">© 2026 Alexander AI Integrated Solutions. All rights reserved.</p>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="mailto:jay@alexanderai.site">Contact</a>
+    <a href="/dashboard">Dashboard</a>
+  </nav>
+</footer>
+
+</body>
+</html>
