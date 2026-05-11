@@ -532,27 +532,27 @@
     <p class="section-sub">We'll help you pick the right one — or run both. Either way, it's set up right from the start.</p>
     <div class="agents-grid">
 
-      <!-- Agent Zero -->
+      <!-- ── Agent Zero ── -->
       <div class="agent-card">
         <div class="agent-card-header">
-          <div class="agent-logo">🤖</div>
+          <div class="agent-logo agent-logo-az">🤖</div>
           <div>
             <h3>Agent Zero</h3>
             <p>Autonomous AI that uses your computer like a developer</p>
           </div>
         </div>
-        <div class="agent-card-body">
+        <div class="agent-card-body check-cyan">
           <ul>
             <li>Runs in a Docker container — safe and isolated</li>
             <li>Browses the web, writes code, manages files</li>
             <li>Creates tools and sub-agents to complete complex tasks</li>
             <li>Works with any LLM — OpenAI, Claude, and more</li>
             <li>Full terminal and browser access for real tasks</li>
-            <li>Pre-configured by us with your API keys & preferences</li>
+            <li>Pre-configured by us with your API keys &amp; preferences</li>
           </ul>
         </div>
         <div class="agent-card-install">
-          <div class="install-label">⚡ Quick Install</div>
+          <div class="install-label">Quick Install</div>
           <div class="install-cmd">
             <span class="install-os">🐧 Linux &amp; macOS</span>
             <div class="install-row">
@@ -570,16 +570,16 @@
         </div>
       </div>
 
-      <!-- Hermes Workspace -->
+      <!-- ── Hermes Workspace ── -->
       <div class="agent-card">
         <div class="agent-card-header">
-          <div class="agent-logo">🪄</div>
+          <div class="agent-logo agent-logo-hw">🪄</div>
           <div>
             <h3>Hermes Workspace</h3>
             <p>AI workspace for chat, agents, memory &amp; collaboration</p>
           </div>
         </div>
-        <div class="agent-card-body">
+        <div class="agent-card-body check-purple">
           <ul>
             <li>Beautiful web UI for chatting with multiple AI models</li>
             <li>Persistent memory and project-based workspaces</li>
@@ -590,7 +590,7 @@
           </ul>
         </div>
         <div class="agent-card-install">
-          <div class="install-label">⚡ Quick Install</div>
+          <div class="install-label">Quick Install</div>
           <div class="install-cmd">
             <span class="install-os">🐧 Linux &amp; macOS</span>
             <div class="install-row">
@@ -599,10 +599,17 @@
             </div>
           </div>
           <div class="install-cmd">
-            <span class="install-os">🐳 Docker</span>
+            <span class="install-os">🪟 Windows (PowerShell — requires Docker Desktop)</span>
             <div class="install-row">
-              <code>docker run -p 80:80 -v hermes_data:/hermes liberty-emporium/hermes-workspace</code>
-              <button class="copy-btn" onclick="copyCode(this, 'docker run -p 80:80 -v hermes_data:/hermes liberty-emporium/hermes-workspace')">Copy</button>
+              <code>docker run -d -p 8642:8642 --name hermes -v hermes_data:/root/.hermes ghcr.io/liberty-emporium/hermes-workspace-alexander-ai:latest</code>
+              <button class="copy-btn" onclick="copyCode(this, 'docker run -d -p 8642:8642 --name hermes -v hermes_data:/root/.hermes ghcr.io/liberty-emporium/hermes-workspace-alexander-ai:latest')">Copy</button>
+            </div>
+          </div>
+          <div class="install-cmd">
+            <span class="install-os">🐳 Docker (all platforms)</span>
+            <div class="install-row">
+              <code>docker run -d -p 8642:8642 -v hermes_data:/root/.hermes ghcr.io/liberty-emporium/hermes-workspace-alexander-ai:latest</code>
+              <button class="copy-btn" onclick="copyCode(this, 'docker run -d -p 8642:8642 -v hermes_data:/root/.hermes ghcr.io/liberty-emporium/hermes-workspace-alexander-ai:latest')">Copy</button>
             </div>
           </div>
         </div>
