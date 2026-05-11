@@ -616,259 +616,285 @@
 <!-- ── INSTALL INSTRUCTIONS ─────────────────────────────────────────────── -->
 <section id="instructions">
   <div class="container">
-    <div class="section-label">Step-by-Step</div>
-    <h2>Full installation guide.</h2>
-    <p class="section-sub">Pick your agent below and follow along — no technical experience needed.</p>
+    <div class="section-label">Get Started</div>
+    <h2>Install in minutes. We'll help if you get stuck.</h2>
+    <p class="section-sub">Pick your agent. Follow the steps. That's it — no tech skills required.</p>
 
     <!-- Tabs -->
     <div class="instructions-tabs">
-      <button class="itab active-az" onclick="switchAgent('az')">🤖 Agent Zero</button>
-      <button class="itab" onclick="switchAgent('hw')" id="tab-hw">🪄 Hermes Workspace</button>
+      <button class="itab active-az" id="tab-az" onclick="switchAgent('az')">🤖 Agent Zero</button>
+      <button class="itab" id="tab-hw" onclick="switchAgent('hw')">🪄 Hermes Workspace</button>
     </div>
 
-    <!-- ── AGENT ZERO PANEL ── -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         AGENT ZERO PANEL
+    ════════════════════════════════════════════════════════════════ -->
     <div class="instructions-panel active" id="panel-az">
-      <ol class="steps-list">
 
-        <li>
-          <div class="step-num step-num-az">1</div>
-          <div class="step-body">
-            <h4>Install Python 3.11+</h4>
-            <p>Agent Zero is a Python app that runs directly on your machine. Install Python for your operating system if you don't have it already.</p>
-            <div class="os-tabs">
-              <button class="ostab active" onclick="showOS('az-py','win')">🪟 Windows</button>
-              <button class="ostab" onclick="showOS('az-py','mac')">🍎 macOS</button>
-              <button class="ostab" onclick="showOS('az-py','linux')">🐧 Linux</button>
-            </div>
-            <div id="az-py-win" class="os-cmds active">
-              <div class="note-box">Download from <strong><a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a></strong> → Install → ✅ Check <strong>"Add Python to PATH"</strong> during install. Then verify in PowerShell:</div>
-              <div class="icode" style="margin-top:8px">
-                <code>python --version</code>
-                <button class="copy-btn" onclick="copyCode(this,'python --version')">Copy</button>
-              </div>
-            </div>
-            <div id="az-py-mac" class="os-cmds">
-              <div class="icode">
-                <code>brew install python@3.12</code>
-                <button class="copy-btn" onclick="copyCode(this,'brew install python@3.12')">Copy</button>
-              </div>
-              <div class="note-box" style="margin-top:8px">No Homebrew? Get it at <a href="https://brew.sh" target="_blank">brew.sh</a> first.</div>
-            </div>
-            <div id="az-py-linux" class="os-cmds">
-              <div class="icode">
-                <code>sudo apt update && sudo apt install python3 python3-pip python3-venv git -y</code>
-                <button class="copy-btn" onclick="copyCode(this,'sudo apt update && sudo apt install python3 python3-pip python3-venv git -y')">Copy</button>
-              </div>
-            </div>
-            <div class="note-box" style="margin-top:10px">⚡ <strong>Note:</strong> Agent Zero uses Docker only when it needs to safely run code or terminal commands — like a sandbox. You won't need to use Docker yourself. If you want that code-execution feature, install <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a> too — but it's optional to get started.</div>
+      <div class="ez-intro">
+        <div class="ez-badge">🤖 Agent Zero</div>
+        <p>Agent Zero is a Python app. It runs directly on your computer — no virtual machines, no complicated setup. Pick your operating system and follow 3 steps.</p>
+      </div>
+
+      <div class="ez-os-pick">
+        <p class="ez-pick-label">What computer do you have?</p>
+        <div class="ez-os-btns">
+          <button class="ez-os-btn active" onclick="pickAZOS('win')">
+            <span class="ez-os-icon">🪟</span>
+            <span class="ez-os-name">Windows</span>
+          </button>
+          <button class="ez-os-btn" onclick="pickAZOS('mac')">
+            <span class="ez-os-icon">🍎</span>
+            <span class="ez-os-name">Mac</span>
+          </button>
+          <button class="ez-os-btn" onclick="pickAZOS('linux')">
+            <span class="ez-os-icon">🐧</span>
+            <span class="ez-os-name">Linux</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Windows steps -->
+      <div class="ez-steps active" id="az-steps-win">
+        <div class="ez-step">
+          <div class="ez-step-num">1</div>
+          <div class="ez-step-content">
+            <h4>Open PowerShell</h4>
+            <p>Click the Windows Start button → type <strong>PowerShell</strong> → click it to open. It looks like a dark window with text.</p>
+            <div class="ez-tip">💡 Tip: Right-click PowerShell and choose "Run as Administrator" for best results.</div>
           </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-az">2</div>
-          <div class="step-body">
-            <h4>Open a terminal</h4>
-            <p>Open <strong>PowerShell</strong> (Windows) or <strong>Terminal</strong> (macOS/Linux). You can search for it in your Start Menu or Spotlight.</p>
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">2</div>
+          <div class="ez-step-content">
+            <h4>Copy this command and paste it in, then press Enter</h4>
+            <div class="ez-cmd">
+              <code>irm https://ps.agent-zero.ai | iex</code>
+              <button class="ez-copy" onclick="copyCode(this,'irm https://ps.agent-zero.ai | iex')">📋 Copy</button>
+            </div>
+            <div class="ez-tip">💡 To paste in PowerShell: right-click anywhere in the window, or press Ctrl+V.</div>
           </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-az">3</div>
-          <div class="step-body">
-            <h4>Install &amp; launch Agent Zero</h4>
-            <p>Paste the command for your operating system. This clones Agent Zero, installs dependencies, and starts it — all in one go.</p>
-            <div class="os-tabs">
-              <button class="ostab active" onclick="showOS('az-install','win')">🪟 Windows</button>
-              <button class="ostab" onclick="showOS('az-install','mac')">🍎 macOS</button>
-              <button class="ostab" onclick="showOS('az-install','linux')">🐧 Linux</button>
-            </div>
-            <div id="az-install-win" class="os-cmds active">
-              <div class="note-box" style="margin-bottom:8px">Run in <strong>PowerShell</strong>:</div>
-              <div class="icode">
-                <code>irm https://ps.agent-zero.ai | iex</code>
-                <button class="copy-btn" onclick="copyCode(this,'irm https://ps.agent-zero.ai | iex')">Copy</button>
-              </div>
-            </div>
-            <div id="az-install-mac" class="os-cmds">
-              <div class="icode">
-                <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
-              </div>
-            </div>
-            <div id="az-install-linux" class="os-cmds">
-              <div class="icode">
-                <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
-              </div>
-            </div>
-            <div class="note-box" style="margin-top:10px">This installs Agent Zero as a <strong>native Python app</strong> on your machine. No virtual machines. No complicated setup.</div>
-          </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-az">4</div>
-          <div class="step-body">
-            <h4>Open Agent Zero in your browser</h4>
-            <p>Once the installer finishes, open your browser and go to:</p>
-            <div class="icode">
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">3</div>
+          <div class="ez-step-content">
+            <h4>Wait for it to finish, then open your browser</h4>
+            <p>When the install is done you'll see a success message. Then open your browser and go to:</p>
+            <div class="ez-cmd">
               <code>http://localhost:80</code>
-              <button class="copy-btn" onclick="copyCode(this,'http://localhost:80')">Copy</button>
+              <button class="ez-copy" onclick="copyCode(this,'http://localhost:80')">📋 Copy</button>
             </div>
-            <div class="note-box">You'll see the Agent Zero web interface. From here you can configure your AI provider (OpenAI, Claude, etc.) and start giving it tasks.</div>
+            <div class="ez-tip">✅ Agent Zero is running! Add your API key in Settings and you're ready to go.</div>
           </div>
-        </li>
+        </div>
+      </div>
 
-        <li>
-          <div class="step-num step-num-az">5</div>
-          <div class="step-body">
-            <h4>Add your AI API key</h4>
-            <p>In the Agent Zero settings, add your OpenAI or Anthropic API key. Don't have one? <strong>We handle this for you</strong> as part of our setup service — just book a call.</p>
-            <div class="note-box">
-              <strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a><br/>
-              <strong>Anthropic (Claude):</strong> <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a>
+      <!-- Mac steps -->
+      <div class="ez-steps" id="az-steps-mac">
+        <div class="ez-step">
+          <div class="ez-step-num">1</div>
+          <div class="ez-step-content">
+            <h4>Open Terminal</h4>
+            <p>Press <strong>Cmd + Space</strong> → type <strong>Terminal</strong> → press Enter. A dark window will open.</p>
+          </div>
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">2</div>
+          <div class="ez-step-content">
+            <h4>Copy this command and paste it in, then press Enter</h4>
+            <div class="ez-cmd">
+              <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
+              <button class="ez-copy" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">📋 Copy</button>
+            </div>
+            <div class="ez-tip">💡 To paste in Terminal: press Cmd+V.</div>
+          </div>
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">3</div>
+          <div class="ez-step-content">
+            <h4>Wait for it to finish, then open your browser</h4>
+            <p>When done, open your browser and go to:</p>
+            <div class="ez-cmd">
+              <code>http://localhost:80</code>
+              <button class="ez-copy" onclick="copyCode(this,'http://localhost:80')">📋 Copy</button>
+            </div>
+            <div class="ez-tip">✅ Agent Zero is running! Add your API key in Settings and you're ready to go.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Linux steps -->
+      <div class="ez-steps" id="az-steps-linux">
+        <div class="ez-step">
+          <div class="ez-step-num">1</div>
+          <div class="ez-step-content">
+            <h4>Open a Terminal</h4>
+            <p>Press <strong>Ctrl + Alt + T</strong> to open a terminal window.</p>
+          </div>
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">2</div>
+          <div class="ez-step-content">
+            <h4>Copy this command and paste it in, then press Enter</h4>
+            <div class="ez-cmd">
+              <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
+              <button class="ez-copy" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">📋 Copy</button>
             </div>
           </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-az">6</div>
-          <div class="step-body">
-            <h4>You're live! 🎉</h4>
-            <p>Type a task in the chat and Agent Zero will get to work. It can browse the web, write code, manage files, and run commands — all from your browser.</p>
-            <div class="note-box">
-              <strong>Need help?</strong> Book a call with Jay and we'll get you fully configured — API keys, preferences, and your first real workflow — in under an hour.
+        </div>
+        <div class="ez-step">
+          <div class="ez-step-num">3</div>
+          <div class="ez-step-content">
+            <h4>Wait for it to finish, then open your browser</h4>
+            <div class="ez-cmd">
+              <code>http://localhost:80</code>
+              <button class="ez-copy" onclick="copyCode(this,'http://localhost:80')">📋 Copy</button>
             </div>
+            <div class="ez-tip">✅ Agent Zero is running!</div>
           </div>
-        </li>
+        </div>
+      </div>
 
-      </ol>
-    </div>
+      <div class="ez-help-box">
+        <span>😅 Something went wrong?</span>
+        <a href="https://cal.com/leprograms/discovery-call" target="_blank" data-cal-link="leprograms/discovery-call" data-cal-namespace="discovery-call" data-cal-config='{"layout":"month_view"}'>Book a free call — Jay will walk you through it live.</a>
+      </div>
 
-    <!-- ── HERMES WORKSPACE PANEL ── -->
+    </div><!-- /panel-az -->
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         HERMES WORKSPACE PANEL
+    ════════════════════════════════════════════════════════════════ -->
     <div class="instructions-panel" id="panel-hw">
-      <ol class="steps-list">
 
-        <li>
-          <div class="step-num step-num-hw">1</div>
-          <div class="step-body">
-            <h4>Check prerequisites</h4>
-            <p>Hermes Workspace needs <strong>Node.js 22+</strong>, <strong>git</strong>, and <strong>pnpm</strong>. Open a terminal and run this to check:</p>
-            <div class="icode purple">
-              <code>node --version && git --version && pnpm --version</code>
-              <button class="copy-btn" onclick="copyCode(this,'node --version && git --version && pnpm --version')">Copy</button>
-            </div>
-            <div class="note-box purple" style="margin-top:8px">If anything is missing: <a href="https://nodejs.org" target="_blank">nodejs.org</a> for Node · <code>npm install -g pnpm</code> for pnpm · <a href="https://git-scm.com" target="_blank">git-scm.com</a> for git.</div>
+      <div class="ez-intro">
+        <div class="ez-badge hw">🪄 Hermes Workspace</div>
+        <p>Hermes runs completely on your computer — no Docker, no cloud, your data stays private. Pick your operating system below.</p>
+      </div>
+
+      <div class="ez-os-pick">
+        <p class="ez-pick-label">What computer do you have?</p>
+        <div class="ez-os-btns">
+          <button class="ez-os-btn hw active" onclick="pickHWOS('win')">
+            <span class="ez-os-icon">🪟</span>
+            <span class="ez-os-name">Windows</span>
+          </button>
+          <button class="ez-os-btn hw" onclick="pickHWOS('mac')">
+            <span class="ez-os-icon">🍎</span>
+            <span class="ez-os-name">Mac</span>
+          </button>
+          <button class="ez-os-btn hw" onclick="pickHWOS('linux')">
+            <span class="ez-os-icon">🐧</span>
+            <span class="ez-os-name">Linux</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Windows steps -->
+      <div class="ez-steps active" id="hw-steps-win">
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">1</div>
+          <div class="ez-step-content">
+            <h4>Open PowerShell as Administrator</h4>
+            <p>Click the Windows Start button → type <strong>PowerShell</strong> → right-click it → click <strong>"Run as Administrator"</strong> → click Yes.</p>
           </div>
-        </li>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">2</div>
+          <div class="ez-step-content">
+            <h4>Copy this command and paste it in, then press Enter</h4>
+            <p>This installs everything automatically — Node.js, Git, and Hermes Workspace — and creates a desktop shortcut.</p>
+            <div class="ez-cmd hw">
+              <code>irm https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install-hermes-windows.ps1 | iex</code>
+              <button class="ez-copy hw" onclick="copyCode(this,'irm https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install-hermes-windows.ps1 | iex')">📋 Copy</button>
+            </div>
+            <div class="ez-tip hw">💡 To paste: right-click in the PowerShell window, or press Ctrl+V.</div>
+          </div>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">3</div>
+          <div class="ez-step-content">
+            <h4>When it finishes — double-click "Start Hermes" on your Desktop</h4>
+            <p>The installer puts a shortcut right on your desktop. Double-click it and Hermes opens in your browser automatically.</p>
+            <div class="ez-tip hw">✅ That's it! Every time you want to use Hermes, just double-click that desktop shortcut.</div>
+          </div>
+        </div>
+      </div>
 
-        <li>
-          <div class="step-num step-num-hw">2</div>
-          <div class="step-body">
+      <!-- Mac steps -->
+      <div class="ez-steps" id="hw-steps-mac">
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">1</div>
+          <div class="ez-step-content">
+            <h4>Open Terminal</h4>
+            <p>Press <strong>Cmd + Space</strong> → type <strong>Terminal</strong> → press Enter.</p>
+          </div>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">2</div>
+          <div class="ez-step-content">
+            <h4>Copy this command and paste it in, then press Enter</h4>
+            <div class="ez-cmd hw">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
+              <button class="ez-copy hw" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">📋 Copy</button>
+            </div>
+            <div class="ez-tip hw">💡 To paste in Terminal: press Cmd+V. Wait for "Install complete!" before moving on.</div>
+          </div>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">3</div>
+          <div class="ez-step-content">
+            <h4>Start Hermes with one command</h4>
+            <div class="ez-cmd hw">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
+              <button class="ez-copy hw" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">📋 Copy</button>
+            </div>
+            <div class="ez-tip hw">✅ Hermes opens at <strong>http://localhost:3000</strong> in your browser.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Linux steps -->
+      <div class="ez-steps" id="hw-steps-linux">
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">1</div>
+          <div class="ez-step-content">
+            <h4>Open a Terminal</h4>
+            <p>Press <strong>Ctrl + Alt + T</strong>.</p>
+          </div>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">2</div>
+          <div class="ez-step-content">
             <h4>Run the installer</h4>
-            <p>Pick your operating system, paste the command in your terminal, and press Enter. It installs everything automatically.</p>
-            <div class="os-tabs">
-              <button class="ostab active-purple" onclick="showOS('hw-install','linux')">🐧 Linux / macOS</button>
-              <button class="ostab" onclick="showOS('hw-install','win')">🪟 Windows</button>
-            </div>
-            <div id="hw-install-linux" class="os-cmds active">
-              <div class="icode purple">
-                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
-              </div>
-            </div>
-            <div id="hw-install-win" class="os-cmds">
-              <div class="note-box purple">Windows requires <strong>WSL2</strong> (Windows Subsystem for Linux). Open <strong>PowerShell as Administrator</strong> and run:</div>
-              <div class="icode purple" style="margin-top:8px">
-                <code>wsl --install</code>
-                <button class="copy-btn" onclick="copyCode(this,'wsl --install')">Copy</button>
-              </div>
-              <div class="note-box purple" style="margin-top:8px">Restart your computer, then open the new <strong>Ubuntu</strong> app and run:</div>
-              <div class="icode purple" style="margin-top:8px">
-                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
-              </div>
-            </div>
-            <div class="note-box purple" style="margin-top:10px">This takes 2–5 minutes. Wait for <strong>"Install complete!"</strong> before moving on.</div>
-          </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-hw">3</div>
-          <div class="step-body">
-            <h4>Start Hermes (one command)</h4>
-            <p>Pick your OS and run the start command:</p>
-            <div class="os-tabs">
-              <button class="ostab active-purple" onclick="showOS('hw-start','linux')">🐧 Linux / macOS</button>
-              <button class="ostab" onclick="showOS('hw-start','win')">🪟 Windows (WSL2)</button>
-            </div>
-            <div id="hw-start-linux" class="os-cmds active">
-              <div class="icode purple">
-                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
-              </div>
-            </div>
-            <div id="hw-start-win" class="os-cmds">
-              <div class="note-box purple">In your <strong>Ubuntu (WSL2)</strong> terminal:</div>
-              <div class="icode purple" style="margin-top:8px">
-                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
-              </div>
-            </div>
-            <p style="margin-top:12px; color: var(--muted); font-size:13px">Or start manually in two separate terminals:</p>
-            <div class="icode purple" style="margin-bottom:8px">
-              <code>hermes gateway run</code>
-              <button class="copy-btn" onclick="copyCode(this,'hermes gateway run')">Copy</button>
-            </div>
-            <div class="icode purple">
-              <code>cd ~/hermes-workspace && pnpm dev</code>
-              <button class="copy-btn" onclick="copyCode(this,'cd ~/hermes-workspace && pnpm dev')">Copy</button>
+            <div class="ez-cmd hw">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
+              <button class="ez-copy hw" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">📋 Copy</button>
             </div>
           </div>
-        </li>
-
-        <li>
-          <div class="step-num step-num-hw">4</div>
-          <div class="step-body">
-            <h4>Open the workspace in your browser</h4>
-            <p>Go to:</p>
-            <div class="icode purple">
-              <code>http://localhost:3000</code>
-              <button class="copy-btn" onclick="copyCode(this,'http://localhost:3000')">Copy</button>
+        </div>
+        <div class="ez-step hw">
+          <div class="ez-step-num hw">3</div>
+          <div class="ez-step-content">
+            <h4>Start Hermes</h4>
+            <div class="ez-cmd hw">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
+              <button class="ez-copy hw" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">📋 Copy</button>
             </div>
-            <div class="note-box purple">You'll see the Hermes Workspace UI. Create your first session, connect an AI provider, and start chatting!</div>
+            <div class="ez-tip hw">✅ Hermes opens at <strong>http://localhost:3000</strong></div>
           </div>
-        </li>
+        </div>
+      </div>
 
-        <li>
-          <div class="step-num step-num-hw">5</div>
-          <div class="step-body">
-            <h4>Add your AI API key</h4>
-            <p>In Settings → Providers, add your API key for OpenAI, Claude, or any other supported provider.</p>
-            <div class="note-box purple">
-              <strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a><br/>
-              <strong>Anthropic (Claude):</strong> <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a><br/>
-              <strong>We handle this for you</strong> as part of our setup service.
-            </div>
-          </div>
-        </li>
+      <div class="ez-help-box hw">
+        <span>😅 Something went wrong?</span>
+        <a href="https://cal.com/leprograms/discovery-call" target="_blank" data-cal-link="leprograms/discovery-call" data-cal-namespace="discovery-call" data-cal-config='{"layout":"month_view"}'>Book a free call — Jay will walk you through it live.</a>
+      </div>
 
-        <li>
-          <div class="step-num step-num-hw">6</div>
-          <div class="step-body">
-            <h4>You're live! 🎉</h4>
-            <p>Hermes Workspace is running on your machine. Your data never leaves your computer. Start a chat, use multiple AI models side by side, or set up agent swarms to tackle big tasks.</p>
-            <div class="note-box purple">
-              <strong>Need help?</strong> Book a call and Jay will configure everything for you — providers, memory, skills, and your first workflow — all set up and ready to go.
-            </div>
-          </div>
-        </li>
-
-      </ol>
-    </div>
+    </div><!-- /panel-hw -->
 
   </div>
 </section>
-
 
 <!-- ── TESTIMONIALS ────────────────────────────────────────────────────────── -->
 <section id="testimonials">
@@ -979,31 +1005,30 @@
   });
 
 
-// ── Instructions tabs ─────────────────────────────────────────────────────
+// ── Instructions tabs & OS picker ─────────────────────────────────────────
 function switchAgent(agent) {
   document.querySelectorAll('.instructions-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.itab').forEach(t => t.classList.remove('active-az','active-hw'));
+  document.getElementById('tab-az').classList.remove('active-az');
+  document.getElementById('tab-hw').classList.remove('active-hw');
   document.getElementById('panel-' + agent).classList.add('active');
-  var tab = agent === 'az'
-    ? document.querySelector('.itab:first-child')
-    : document.getElementById('tab-hw');
-  tab.classList.add(agent === 'az' ? 'active-az' : 'active-hw');
+  document.getElementById('tab-' + agent).classList.add(agent === 'az' ? 'active-az' : 'active-hw');
 }
-
+function pickAZOS(os) {
+  document.querySelectorAll('[id^="az-steps-"]').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#panel-az .ez-os-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('az-steps-' + os).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function pickHWOS(os) {
+  document.querySelectorAll('[id^="hw-steps-"]').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#panel-hw .ez-os-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('hw-steps-' + os).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
 function showOS(group, os) {
-  // Hide all cmds in this group
   document.querySelectorAll('[id^="' + group + '-"]').forEach(el => el.classList.remove('active'));
-  // Deactivate all tabs in the nearest .os-tabs
   var target = document.getElementById(group + '-' + os);
-  if (!target) return;
-  var container = target.closest('.step-body');
-  if (container) {
-    container.querySelectorAll('.ostab').forEach(t => t.classList.remove('active','active-purple'));
-    // Activate clicked tab
-    var clicked = Array.from(container.querySelectorAll('.ostab')).find(t => t.getAttribute('onclick').includes("'" + os + "'"));
-    if (clicked) clicked.classList.add(container.closest('#panel-hw') ? 'active-purple' : 'active');
-  }
-  target.classList.add('active');
+  if (target) target.classList.add('active');
 }
 
 // ── Copy to clipboard ─────────────────────────────────────────────────────
