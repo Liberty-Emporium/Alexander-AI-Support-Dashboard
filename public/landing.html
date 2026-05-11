@@ -755,12 +755,30 @@
           <div class="step-num step-num-hw">2</div>
           <div class="step-body">
             <h4>Run the installer</h4>
-            <p>Paste this in your terminal and press Enter. It installs everything — hermes-agent, the workspace UI, and all dependencies.</p>
-            <div class="icode purple">
-              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
-              <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
+            <p>Pick your operating system, paste the command in your terminal, and press Enter. It installs everything automatically.</p>
+            <div class="os-tabs">
+              <button class="ostab active-purple" onclick="showOS('hw-install','linux')">🐧 Linux / macOS</button>
+              <button class="ostab" onclick="showOS('hw-install','win')">🪟 Windows</button>
             </div>
-            <div class="note-box purple" style="margin-top:8px">This takes 2–5 minutes. You'll see progress in the terminal. Wait for <strong>"Install complete!"</strong> before moving on.</div>
+            <div id="hw-install-linux" class="os-cmds active">
+              <div class="icode purple">
+                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
+              </div>
+            </div>
+            <div id="hw-install-win" class="os-cmds">
+              <div class="note-box purple">Windows requires <strong>WSL2</strong> (Windows Subsystem for Linux). Open <strong>PowerShell as Administrator</strong> and run:</div>
+              <div class="icode purple" style="margin-top:8px">
+                <code>wsl --install</code>
+                <button class="copy-btn" onclick="copyCode(this,'wsl --install')">Copy</button>
+              </div>
+              <div class="note-box purple" style="margin-top:8px">Restart your computer, then open the new <strong>Ubuntu</strong> app and run:</div>
+              <div class="icode purple" style="margin-top:8px">
+                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
+              </div>
+            </div>
+            <div class="note-box purple" style="margin-top:10px">This takes 2–5 minutes. Wait for <strong>"Install complete!"</strong> before moving on.</div>
           </div>
         </li>
 
@@ -768,12 +786,25 @@
           <div class="step-num step-num-hw">3</div>
           <div class="step-body">
             <h4>Start Hermes (one command)</h4>
-            <p>Run this to start both the gateway and the UI at the same time:</p>
-            <div class="icode purple">
-              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
-              <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
+            <p>Pick your OS and run the start command:</p>
+            <div class="os-tabs">
+              <button class="ostab active-purple" onclick="showOS('hw-start','linux')">🐧 Linux / macOS</button>
+              <button class="ostab" onclick="showOS('hw-start','win')">🪟 Windows (WSL2)</button>
             </div>
-            <p style="margin-top:10px">Or manually in two terminals:</p>
+            <div id="hw-start-linux" class="os-cmds active">
+              <div class="icode purple">
+                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
+              </div>
+            </div>
+            <div id="hw-start-win" class="os-cmds">
+              <div class="note-box purple">In your <strong>Ubuntu (WSL2)</strong> terminal:</div>
+              <div class="icode purple" style="margin-top:8px">
+                <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
+              </div>
+            </div>
+            <p style="margin-top:12px; color: var(--muted); font-size:13px">Or start manually in two separate terminals:</p>
             <div class="icode purple" style="margin-bottom:8px">
               <code>hermes gateway run</code>
               <button class="copy-btn" onclick="copyCode(this,'hermes gateway run')">Copy</button>
