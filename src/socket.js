@@ -1,8 +1,11 @@
 const { Server } = require("socket.io");
 const db = require("./db");
 
-// Map: machine_id -> socket
+// Map: machine_id -> socket  (customer agents)
 const activeSockets = new Map();
+
+// Set of all admin browser sockets
+const adminSockets = new Set();
 
 function initSocket(httpServer) {
   const io = new Server(httpServer, {
@@ -12,6 +15,21 @@ function initSocket(httpServer) {
 
   io.on("connection", (socket) => {
     const machineId = socket.handshake.query.session_id;
+    const isAdmin   = socket.handshake.query.admin === "1";
+
+    // ── Admin browser connections ─────────────────────────────────────────
+    if (isAdmin) {
+      adminSockets.add(socket);
+      console.log(`[socket] +ADMIN   (total=${adminSockets.size})`);
+
+      socket.on("disconnect", () => {
+        adminSockets.delete(socket);
+        console.log(`[socket] -ADMIN   (total=${adminSockets.size})`);
+      });
+      return;
+    }
+
+    // ── Agent (customer machine) connections ──────────────────────────────
     if (!machineId) { socket.disconnect(); return; }
 
     activeSockets.set(machineId, socket);
@@ -29,12 +47,14 @@ function initSocket(httpServer) {
       VALUES (?, 'connect', 'Agent connected')
     `).run(machineId);
 
-    // ── machine_info ────────────────────────────────────────────────────
+    // Notify admins
+    broadcast({ type: "machine_online", machine_id: machineId });
+
+    // ── machine_info ──────────────────────────────────────────────────────
     socket.on("machine_info", (info) => {
       if (!info || typeof info !== "object") return;
       const mid = info.machine_id || machineId;
 
-      // Upsert machine row
       db.prepare(`
         INSERT INTO machines (machine_id, hostname, os, os_release, architecture,
           agent_type, agent_version, hermes_version, docker_container,
@@ -72,16 +92,17 @@ function initSocket(httpServer) {
       console.log(`[socket] machine_info from ${mid} (${info.hostname})`);
     });
 
-    // ── error report ────────────────────────────────────────────────────
+    // ── error report ──────────────────────────────────────────────────────
     socket.on("error_report", (data) => {
       db.prepare(`
         INSERT INTO events (machine_id, type, message, data)
         VALUES (?, 'error', ?, ?)
       `).run(machineId, data?.message || "Unknown error", JSON.stringify(data));
       console.log(`[socket] ERROR from ${machineId}: ${data?.message}`);
+      broadcast({ type: "error_report", machine_id: machineId, message: data?.message });
     });
 
-    // ── command result ───────────────────────────────────────────────────
+    // ── command result — push to all admin browsers in real-time ──────────
     socket.on("command_result", (data) => {
       db.prepare(`
         UPDATE commands
@@ -90,24 +111,44 @@ function initSocket(httpServer) {
           SELECT id FROM commands WHERE machine_id = ? ORDER BY id DESC LIMIT 1
         )
       `).run(data.output, data.returncode, data.timed_out ? 1 : 0, machineId, machineId);
+
       console.log(`[socket] cmd_result from ${machineId} rc=${data.returncode}`);
+
+      // Push to every open admin browser immediately
+      broadcast({
+        type:       "command_result",
+        machine_id: machineId,
+        cmd:        data.cmd,
+        cmd_id:     data.cmd_id,
+        output:     data.output,
+        returncode: data.returncode,
+        timed_out:  data.timed_out,
+      });
     });
 
-    // ── pong ─────────────────────────────────────────────────────────────
+    // ── pong ──────────────────────────────────────────────────────────────
     socket.on("pong_agent", (data) => {
       db.prepare(`UPDATE machines SET last_seen = datetime('now') WHERE machine_id = ?`).run(machineId);
     });
 
-    // ── disconnect ───────────────────────────────────────────────────────
+    // ── disconnect ────────────────────────────────────────────────────────
     socket.on("disconnect", () => {
       activeSockets.delete(machineId);
       db.prepare(`UPDATE machines SET online = 0, last_seen = datetime('now') WHERE machine_id = ?`).run(machineId);
       db.prepare(`INSERT INTO events (machine_id, type, message) VALUES (?, 'disconnect', 'Agent disconnected')`).run(machineId);
       console.log(`[socket] -DISCONNECT ${machineId}`);
+      broadcast({ type: "machine_offline", machine_id: machineId });
     });
   });
 
   return io;
+}
+
+// Broadcast a message to all connected admin browsers
+function broadcast(payload) {
+  for (const s of adminSockets) {
+    try { s.emit("admin_event", payload); } catch (_) {}
+  }
 }
 
 // Send a command to a specific machine
@@ -115,7 +156,6 @@ function sendCommand(machineId, cmd) {
   const socket = activeSockets.get(machineId);
   if (!socket) return false;
 
-  // Save command record
   const result = db.prepare(`
     INSERT INTO commands (machine_id, cmd) VALUES (?, ?)
   `).run(machineId, cmd);
