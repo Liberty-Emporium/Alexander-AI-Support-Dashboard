@@ -877,10 +877,46 @@
     <h2>Install in minutes. We'll help if you get stuck.</h2>
     <p class="section-sub">Pick your agent. Follow the steps. That's it — no tech skills required.</p>
 
-    <!-- Tabs -->
-    <div class="instructions-tabs">
-      <button class="itab active-az" id="tab-az" onclick="switchAgent('az')">🤖 Agent Zero</button>
-      <button class="itab" id="tab-hw" onclick="switchAgent('hw')">🪄 Hermes Workspace</button>
+    <!-- Agent Selector -->
+    <div class="agent-selector">
+      <p class="selector-label">👇 Choose your agent to see the install steps:</p>
+      <div class="selector-cards">
+
+        <button class="selector-card active" id="tab-az" onclick="switchAgent('az')">
+          <div class="selector-card-icon az">🤖</div>
+          <div class="selector-card-text">
+            <div class="selector-card-name">Agent Zero</div>
+            <div class="selector-card-desc">Autonomous AI — browses web, writes code, runs tasks</div>
+          </div>
+          <div class="selector-check" id="check-az">✓</div>
+        </button>
+
+        <button class="selector-card" id="tab-hw" onclick="switchAgent('hw')">
+          <div class="selector-card-icon hw">🪄</div>
+          <div class="selector-card-text">
+            <div class="selector-card-name">Hermes Workspace</div>
+            <div class="selector-card-desc">AI workspace — chat, memory, agents, document editor</div>
+          </div>
+          <div class="selector-check hidden" id="check-hw">✓</div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Active agent banner -->
+    <div class="active-agent-banner" id="active-banner-az">
+      <span class="active-banner-icon">🤖</span>
+      <div>
+        <strong>Agent Zero Install Guide</strong>
+        <span>Python app · Runs natively on your machine</span>
+      </div>
+    </div>
+    <div class="active-agent-banner hw hidden" id="active-banner-hw">
+      <span class="active-banner-icon">🪄</span>
+      <div>
+        <strong>Hermes Workspace Install Guide</strong>
+        <span>Node.js app · 100% local · Your data stays private</span>
+      </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════
@@ -1264,11 +1300,22 @@
 
 // ── Instructions tabs & OS picker ─────────────────────────────────────────
 function switchAgent(agent) {
+  // Panels
   document.querySelectorAll('.instructions-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-az').classList.remove('active-az');
-  document.getElementById('tab-hw').classList.remove('active-hw');
   document.getElementById('panel-' + agent).classList.add('active');
-  document.getElementById('tab-' + agent).classList.add(agent === 'az' ? 'active-az' : 'active-hw');
+  // Selector cards
+  document.querySelectorAll('.selector-card').forEach(c => c.classList.remove('active'));
+  var card = document.getElementById('tab-' + agent);
+  card.classList.add('active');
+  if (agent === 'hw') card.classList.add('hw');
+  // Check marks
+  document.getElementById('check-az').classList.add('hidden');
+  document.getElementById('check-hw').classList.add('hidden');
+  document.getElementById('check-' + agent).classList.remove('hidden');
+  // Banners
+  document.getElementById('active-banner-az').classList.add('hidden');
+  document.getElementById('active-banner-hw').classList.add('hidden');
+  document.getElementById('active-banner-' + agent).classList.remove('hidden');
 }
 function pickAZOS(os) {
   document.querySelectorAll('[id^="az-steps-"]').forEach(el => el.classList.remove('active'));
