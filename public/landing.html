@@ -3,9 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alexander AI — AI Agent Support & Monitoring</title>
-  <meta name="description" content="Keep your AI agents running 24/7. Alexander AI monitors your Hermes and Agent Zero installations, catches errors before your customers do, and lets you fix problems remotely." />
+  <title>Alexander AI — AI Agents Set Up & Supported For You</title>
+  <meta name="description" content="We set up Agent Zero or Hermes Workspace on your machine — pre-configured, ready to run, with live support built right in. No tech skills needed." />
   <link rel="icon" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Cal.com embed -->
+  <script type="text/javascript">
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", { origin: "https://cal.com" });
+    Cal("init", "discovery-call", { origin: "https://cal.com" });
+    Cal("init", "strategy", { origin: "https://cal.com" });
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,8 +32,8 @@
       --accent:  #00f0ff;
       --accent2: #3050FF;
       --success: #64ffda;
-      --warning: #ff6b35;
       --gold:    #FFD700;
+      --danger:  #ff5252;
     }
 
     html { scroll-behavior: smooth; }
@@ -33,288 +46,181 @@
     }
 
     a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
 
-    /* ── NAV ──────────────────────────────────────────────────────────── */
+    /* ── NAV ─────────────────────────────────────────────────────────── */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(6,11,24,0.92);
-      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,11,24,0.94);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 0 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
+      padding: 0 6%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 66px;
     }
     .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--text);
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 17px; color: var(--text);
     }
-    .nav-logo svg { width: 32px; height: 32px; }
-    .nav-links { display: flex; gap: 28px; align-items: center; }
-    .nav-links a { color: var(--muted); font-size: 14px; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--accent); text-decoration: none; }
-    .nav-cta {
-      background: var(--accent);
-      color: #000 !important;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: opacity 0.15s;
+    .nav-logo img { height: 36px; width: auto; border-radius: 6px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: 14px; font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--accent); }
+    .btn-nav {
+      background: var(--accent); color: #000 !important;
+      font-weight: 700; padding: 9px 20px;
+      border-radius: 8px; font-size: 14px;
+      transition: opacity .15s, transform .15s;
+      border: none; cursor: pointer;
     }
-    .nav-cta:hover { opacity: 0.85; text-decoration: none !important; }
+    .btn-nav:hover { opacity: .85; transform: translateY(-1px); }
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
 
-    /* ── SECTIONS ─────────────────────────────────────────────────────── */
-    section { padding: 96px 5%; }
-
-    .container { max-width: 1100px; margin: 0 auto; }
-
-    /* ── HERO ─────────────────────────────────────────────────────────── */
+    /* ── HERO ────────────────────────────────────────────────────────── */
     #hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      padding-top: 40px;
+      min-height: 92vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 60px 6% 80px;
     }
     .hero-grid {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(0,240,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.035) 1px, transparent 1px);
       background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%);
     }
     .hero-glow {
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0,240,255,0.08) 0%, transparent 70%);
+      position: absolute; top: -160px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
-    .hero-content {
-      position: relative;
-      max-width: 1100px;
-      margin: 0 auto;
-      text-align: center;
+    .hero-inner {
+      position: relative; max-width: 1120px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-right { display: none; }
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0,240,255,0.08);
-      border: 1px solid rgba(0,240,255,0.25);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
-      color: var(--accent);
-      margin-bottom: 28px;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.22);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; color: var(--accent); font-weight: 600;
+      margin-bottom: 24px; letter-spacing: .03em;
     }
-    .hero-badge span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
+    .hero-badge .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.35} }
     h1 {
-      font-size: clamp(36px, 6vw, 72px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 24px;
+      font-size: clamp(34px,5vw,62px); font-weight: 800;
+      line-height: 1.1; letter-spacing: -.02em; margin-bottom: 22px;
     }
-    h1 .highlight {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .gradient-text {
+      background: linear-gradient(130deg, var(--accent) 0%, #3050FF 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .hero-sub {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
+      font-size: clamp(15px,1.8vw,18px); color: var(--muted);
+      max-width: 520px; line-height: 1.75; margin-bottom: 36px;
     }
-    .hero-ctas {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 64px;
-    }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
     .btn-primary {
-      background: var(--accent);
-      color: #000;
-      font-weight: 700;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 15px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s;
-      border: none;
-      cursor: pointer;
+      background: var(--accent); color: #000;
+      font-weight: 700; padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; display: inline-flex; align-items: center; gap: 8px;
+      transition: all .15s; border: none; cursor: pointer; white-space: nowrap;
     }
-    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); text-decoration: none; }
+    .btn-primary:hover { opacity: .85; transform: translateY(-2px); }
     .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      font-weight: 600;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 15px;
-      border: 1px solid var(--border);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s;
-      cursor: pointer;
+      background: transparent; color: var(--text);
+      font-weight: 600; padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; border: 1px solid var(--border);
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all .15s; cursor: pointer; white-space: nowrap;
     }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); text-decoration: none; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-    /* Dashboard preview */
-    .hero-preview {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 1px rgba(0,240,255,0.2), 0 0 60px rgba(0,240,255,0.04);
-      max-width: 900px;
-      margin: 0 auto;
+    /* Hero right — logo showcase */
+    .hero-right {
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
     }
-    .preview-bar {
-      background: #0a1628;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
+    .hero-logo-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 1px rgba(0,240,255,.15), 0 0 50px rgba(0,240,255,.03);
+      text-align: center; width: 100%;
     }
-    .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
-    .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #febc2e; }
-    .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
-    .preview-url { flex: 1; background: #060b18; border-radius: 5px; padding: 4px 12px; font-size: 12px; color: var(--muted); margin: 0 12px; }
-    .preview-body {
-      padding: 24px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-    .preview-stat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-    }
-    .preview-stat-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-    .preview-stat-val { font-size: 24px; font-weight: 700; }
-    .preview-table {
-      grid-column: 1 / -1;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .preview-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 80px 80px;
-      padding: 10px 16px;
-      font-size: 12px;
-      border-bottom: 1px solid var(--border);
-      align-items: center;
-    }
-    .preview-row:last-child { border-bottom: none; }
-    .preview-row.header { background: #0a1628; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-    .chip-on { background: rgba(100,255,218,0.12); color: var(--success); }
-    .chip-off { background: rgba(93,155,184,0.1); color: var(--muted); }
-    .chip-err { background: rgba(255,82,82,0.12); color: #ff5252; }
+    .hero-logo-card img { max-width: 220px; width: 100%; height: auto; border-radius: 12px; }
+    .hero-logo-card p { color: var(--muted); font-size: 13px; margin-top: 14px; line-height: 1.5; }
+    .hero-ai-image { border-radius: 16px; width: 100%; max-width: 320px; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
 
-    /* ── LOGOS / TRUST ────────────────────────────────────────────────── */
-    #trust {
-      padding: 32px 5%;
+    /* trust bar */
+    .trust-bar {
+      margin-top: 52px; padding-top: 28px;
       border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      text-align: center;
+      display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
     }
-    #trust p { font-size: 13px; color: var(--muted); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .trust-agents {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 48px;
-      flex-wrap: wrap;
+    .trust-bar span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; }
+    .trust-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600;
     }
-    .trust-agent {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0.6;
-      transition: opacity 0.2s;
-    }
-    .trust-agent:hover { opacity: 1; }
-    .trust-agent-icon { width: 32px; height: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .trust-agent-name { font-size: 14px; font-weight: 600; color: var(--text); }
 
-    /* ── FEATURES ─────────────────────────────────────────────────────── */
+    /* ── SECTION COMMON ──────────────────────────────────────────────── */
+    section { padding: 96px 6%; }
+    .container { max-width: 1120px; margin: 0 auto; }
     .section-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px;
     }
     h2 {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
+      font-size: clamp(26px,3.5vw,42px); font-weight: 800;
+      line-height: 1.15; letter-spacing: -.02em; margin-bottom: 14px;
     }
     .section-sub {
-      color: var(--muted);
-      font-size: 17px;
-      max-width: 540px;
-      line-height: 1.7;
-      margin-bottom: 60px;
+      color: var(--muted); font-size: 17px; max-width: 540px;
+      line-height: 1.7; margin-bottom: 56px;
     }
+
+    /* ── FOR WHO ─────────────────────────────────────────────────────── */
+    #forwho { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .who-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px;
+    }
+    .who-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+      transition: border-color .2s, transform .2s;
+    }
+    .who-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .who-icon { font-size: 28px; margin-bottom: 14px; }
+    .who-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .who-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── WHAT YOU GET ─────────────────────────────────────────────────── */
     .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px;
     }
     .feature-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
-      transition: border-color 0.2s, transform 0.2s;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+      transition: border-color .2s, transform .2s;
     }
     .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
     .feature-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--accent-sub, rgba(0,240,255,0.08));
-      border: 1px solid rgba(0,240,255,0.2);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      margin-bottom: 16px;
+      width: 46px; height: 46px;
+      background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.18);
+      border-radius: 11px; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 16px;
     }
     .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
     .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
@@ -322,399 +228,388 @@
     /* ── HOW IT WORKS ─────────────────────────────────────────────────── */
     #how { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 32px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 36px;
       position: relative;
     }
     .step { text-align: center; }
     .step-num {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      font-size: 20px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 2px solid var(--accent); color: var(--accent);
+      font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
       margin: 0 auto 16px;
-      box-shadow: 0 0 20px rgba(0,240,255,0.15);
+      box-shadow: 0 0 24px rgba(0,240,255,.12);
     }
-    .step h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .step h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ── PRICING ──────────────────────────────────────────────────────── */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      max-width: 900px;
-      margin: 0 auto;
+    /* ── AGENTS ───────────────────────────────────────────────────────── */
+    .agents-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 28px;
     }
-    .price-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 36px 32px;
-      position: relative;
-      transition: transform 0.2s;
+    .agent-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      transition: transform .2s, border-color .2s;
     }
-    .price-card:hover { transform: translateY(-4px); }
-    .price-card.featured { border-color: var(--accent); background: var(--card); box-shadow: 0 0 40px rgba(0,240,255,0.08); }
-    .price-badge {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: #000;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-    .price-tier { font-size: 13px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .price-amount { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
-    .price-amount sup { font-size: 20px; vertical-align: super; }
-    .price-amount sub { font-size: 14px; color: var(--muted); font-weight: 400; }
-    .price-desc { color: var(--muted); font-size: 14px; margin: 12px 0 24px; }
-    .price-features { list-style: none; }
-    .price-features li {
-      font-size: 14px;
-      color: var(--text);
-      padding: 8px 0;
+    .agent-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .agent-card-header {
+      padding: 28px 28px 20px;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 14px;
     }
-    .price-features li:last-child { border-bottom: none; }
-    .price-features li::before { content: "✓"; color: var(--success); font-weight: 700; flex-shrink: 0; }
-    .price-cta {
-      display: block;
-      text-align: center;
-      margin-top: 28px;
-      padding: 12px;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 14px;
-      transition: all 0.15s;
+    .agent-logo {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+      flex-shrink: 0;
     }
-    .price-cta-primary { background: var(--accent); color: #000; }
-    .price-cta-primary:hover { opacity: 0.85; text-decoration: none; }
-    .price-cta-ghost { border: 1px solid var(--border); color: var(--text); }
-    .price-cta-ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+    .agent-card-header h3 { font-size: 18px; font-weight: 700; }
+    .agent-card-header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .agent-card-body { padding: 24px 28px; }
+    .agent-card-body ul { list-style: none; }
+    .agent-card-body ul li {
+      font-size: 14px; color: var(--text); padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .agent-card-body ul li:last-child { border-bottom: none; }
+    .agent-card-body ul li::before { content: "✓"; color: var(--success); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 
-    /* ── TESTIMONIALS ─────────────────────────────────────────────────── */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .testimonial {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
-    }
-    .testimonial-text { font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 20px; font-style: italic; }
-    .testimonial-text::before { content: '"'; color: var(--accent); font-size: 24px; line-height: 0; vertical-align: -8px; margin-right: 4px; }
-    .testimonial-author { display: flex; align-items: center; gap: 12px; }
-    .testimonial-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 14px; }
-    .testimonial-name { font-size: 14px; font-weight: 600; }
-    .testimonial-role { font-size: 12px; color: var(--muted); }
-    .stars { color: var(--gold); font-size: 13px; margin-bottom: 12px; }
-
-    /* ── CTA BANNER ───────────────────────────────────────────────────── */
-    #cta-banner {
-      text-align: center;
+    /* ── BOOK SECTION ─────────────────────────────────────────────────── */
+    #book {
       background: linear-gradient(135deg, #060b18 0%, #0d1b35 50%, #060b18 100%);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
+      text-align: center; position: relative; overflow: hidden;
     }
-    #cta-banner::before {
+    #book::before {
       content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 300px;
-      background: radial-gradient(ellipse, rgba(0,240,255,0.07) 0%, transparent 70%);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,240,255,0.06) 0%, transparent 70%);
     }
-    #cta-banner .container { position: relative; }
-    #cta-banner h2 { margin-bottom: 16px; }
-    #cta-banner p { color: var(--muted); font-size: 17px; max-width: 480px; margin: 0 auto 40px; }
+    #book .container { position: relative; }
+    #book h2 { margin-bottom: 16px; }
+    #book .section-sub { margin: 0 auto 48px; }
+    .book-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 24px; max-width: 700px; margin: 0 auto;
+    }
+    .book-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px; text-align: left;
+      transition: border-color .2s, transform .2s;
+    }
+    .book-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .book-card.featured { border-color: var(--accent); background: var(--card); box-shadow: 0 0 40px rgba(0,240,255,.07); }
+    .book-card .duration {
+      display: inline-block; background: rgba(0,240,255,.08); border: 1px solid rgba(0,240,255,.2);
+      color: var(--accent); font-size: 12px; font-weight: 700;
+      padding: 3px 10px; border-radius: 12px; margin-bottom: 14px;
+    }
+    .book-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .book-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+    .book-btn {
+      display: block; text-align: center; width: 100%;
+      padding: 12px; border-radius: 9px;
+      font-weight: 700; font-size: 14px; cursor: pointer; border: none;
+      transition: all .15s;
+    }
+    .book-btn-primary { background: var(--accent); color: #000; }
+    .book-btn-primary:hover { opacity: .85; }
+    .book-btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .book-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────────────────── */
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px;
+    }
+    .testimonial {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+    }
+    .stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; }
+    .testimonial-text {
+      font-size: 15px; line-height: 1.7; color: var(--text);
+      margin-bottom: 20px; font-style: italic;
+    }
+    .testimonial-text::before { content: '"'; color: var(--accent); font-size: 28px; line-height: 0; vertical-align: -10px; margin-right: 4px; }
+    .t-author { display: flex; align-items: center; gap: 12px; }
+    .t-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: var(--accent); font-size: 15px;
+    }
+    .t-name { font-size: 14px; font-weight: 600; }
+    .t-role { font-size: 12px; color: var(--muted); }
 
     /* ── FOOTER ───────────────────────────────────────────────────────── */
     footer {
-      padding: 40px 5%;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
+      padding: 40px 6%; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
     }
-    footer .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
-    footer .logo svg { width: 24px; height: 24px; }
-    footer p { color: var(--muted); font-size: 13px; }
-    footer nav { display: flex; gap: 20px; }
-    footer nav a { color: var(--muted); font-size: 13px; transition: color 0.15s; }
-    footer nav a:hover { color: var(--accent); text-decoration: none; }
-
-    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .preview-body { grid-template-columns: repeat(2, 1fr); }
-      .preview-table, .preview-row { display: none; }
-      section { padding: 64px 5%; }
-    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+    .footer-logo img { height: 28px; border-radius: 4px; }
+    footer p { font-size: 13px; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--accent); }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── NAV ─────────────────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-logo">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#1E30AA"/>
-        <stop offset="50%" stop-color="#3050FF"/>
-        <stop offset="100%" stop-color="#5070FF"/>
-      </linearGradient></defs>
-      <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#lg)"/>
-      <rect x="47" y="22" width="6" height="56" rx="3" fill="#FFD700"/>
-      <path d="M 35 30 Q 50 22, 50 30" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M 65 30 Q 50 22, 50 30" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M 38 58 Q 30 50, 38 42 Q 46 34, 50 38" stroke="#E8ECFF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <path d="M 62 58 Q 70 50, 62 42 Q 54 34, 50 38" stroke="#E8ECFF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <circle cx="50" cy="22" r="5" fill="#FFD700"/>
-    </svg>
+    <img src="https://raw.githubusercontent.com/Liberty-Emporium/Logos/main/Business%20Logo.png" alt="Alexander AI" />
     Alexander AI
   </div>
   <div class="nav-links">
-    <a href="#features">Features</a>
+    <a href="#forwho">Who It's For</a>
+    <a href="#features">What You Get</a>
     <a href="#how">How It Works</a>
-    <a href="#pricing">Pricing</a>
-    <a href="/dashboard">Login</a>
-    <a href="#pricing" class="nav-cta">Get Started →</a>
+    <a href="#agents">The Agents</a>
+    <a href="#book">Pricing</a>
   </div>
+  <button class="btn-nav"
+    data-cal-link="leprograms/discovery-call"
+    data-cal-namespace="discovery-call"
+    data-cal-config='{"layout":"month_view"}'>
+    Book a Free Call
+  </button>
 </nav>
 
-<!-- HERO -->
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
 <section id="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span></span> Live agent monitoring — always on
-    </div>
-    <h1>Your customers' AI agents,<br><span class="highlight">always running.</span></h1>
-    <p class="hero-sub">
-      Alexander AI keeps your Hermes and Agent Zero deployments healthy 24/7.
-      Catch errors before your customers do. Fix problems remotely in seconds.
-    </p>
-    <div class="hero-ctas">
-      <a href="#pricing" class="btn-primary">Start Monitoring Free →</a>
-      <a href="#how" class="btn-ghost">See How It Works</a>
-    </div>
-
-    <!-- Dashboard Mock -->
-    <div class="hero-preview">
-      <div class="preview-bar">
-        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        <div class="preview-url">alexanderai.site/clients</div>
+  <div class="hero-inner container">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        AI agents — set up and supported for you
       </div>
-      <div class="preview-body">
-        <div class="preview-stat">
-          <div class="preview-stat-label">Active Clients</div>
-          <div class="preview-stat-val" style="color:var(--accent)">12</div>
-        </div>
-        <div class="preview-stat">
-          <div class="preview-stat-label">Machines Online</div>
-          <div class="preview-stat-val" style="color:var(--success)">9</div>
-        </div>
-        <div class="preview-stat">
-          <div class="preview-stat-label">Errors (24h)</div>
-          <div class="preview-stat-val" style="color:#ff5252">2</div>
-        </div>
-        <div class="preview-stat">
-          <div class="preview-stat-label">Uptime Avg</div>
-          <div class="preview-stat-val" style="color:var(--gold)">98%</div>
-        </div>
-        <div class="preview-table">
-          <div class="preview-row header">
-            <span>Client</span><span>Agent</span><span>Status</span><span>Last Seen</span>
-          </div>
-          <div class="preview-row">
-            <span>Mark T.</span><span style="color:var(--muted);font-size:11px">Hermes</span>
-            <span><div class="chip chip-on">Online</div></span>
-            <span style="color:var(--muted);font-size:11px">2s ago</span>
-          </div>
-          <div class="preview-row">
-            <span>Lisa M.</span><span style="color:var(--muted);font-size:11px">Agent Zero</span>
-            <span><div class="chip chip-err">Error</div></span>
-            <span style="color:var(--muted);font-size:11px">1m ago</span>
-          </div>
-          <div class="preview-row">
-            <span>David K.</span><span style="color:var(--muted);font-size:11px">Hermes</span>
-            <span><div class="chip chip-on">Online</div></span>
-            <span style="color:var(--muted);font-size:11px">8s ago</span>
-          </div>
-          <div class="preview-row">
-            <span>Sarah J.</span><span style="color:var(--muted);font-size:11px">Agent Zero</span>
-            <span><div class="chip chip-off">Offline</div></span>
-            <span style="color:var(--muted);font-size:11px">2h ago</span>
-          </div>
-        </div>
+      <h1>Your AI Agent.<br /><span class="gradient-text">Running. Always.</span></h1>
+      <p class="hero-sub">
+        We set up Agent Zero or Hermes Workspace on your machine — fully configured, ready to go on day one, with live remote support built in. No tech skills required.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-primary"
+          data-cal-link="leprograms/discovery-call"
+          data-cal-namespace="discovery-call"
+          data-cal-config='{"layout":"month_view"}'>
+          📅 Book a Free Discovery Call
+        </button>
+        <a href="#agents" class="btn-ghost">See the Agents →</a>
+      </div>
+      <div class="trust-bar">
+        <span>Powered by</span>
+        <div class="trust-pill">🤖 Agent Zero</div>
+        <div class="trust-pill">🪄 Hermes Workspace</div>
+        <div class="trust-pill">⚡ Live Remote Support</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-logo-card">
+        <img src="https://raw.githubusercontent.com/Liberty-Emporium/Logos/main/Business%20Logo.png" alt="Alexander AI Logo" />
+        <p>Alexander AI Solutions<br />Owner/Operator: Jay</p>
+      </div>
+      <img
+        class="hero-ai-image"
+        src="https://raw.githubusercontent.com/Liberty-Emporium/Logos/main/ChatGPT%20Image%20Apr%2028%2C%202026%2C%2004_28_13%20AM.png"
+        alt="AI Agent Visualization"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- ── WHO IT'S FOR ───────────────────────────────────────────────────────── -->
+<section id="forwho">
+  <div class="container">
+    <div class="section-label">Who It's For</div>
+    <h2>You don't need to be technical.</h2>
+    <p class="section-sub">If you've heard about AI agents but don't know where to start — you're exactly who we built this for.</p>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-icon">🏪</div>
+        <h3>Small Business Owners</h3>
+        <p>Automate customer replies, research, scheduling, and tasks — without hiring a developer or touching a line of code.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">🎯</div>
+        <h3>Entrepreneurs & Creators</h3>
+        <p>Launch your AI-powered workflow fast. We handle the setup so you can focus on your business, not your tech stack.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">📈</div>
+        <h3>Solopreneurs</h3>
+        <p>Work smarter with an AI agent that browses the web, writes content, manages files, and takes on tasks around the clock.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">🏢</div>
+        <h3>Teams & Agencies</h3>
+        <p>Deploy agents for multiple team members. Each one monitored, supported, and ready to scale as you grow.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TRUST BAR -->
-<div id="trust">
-  <p>Built for teams deploying</p>
-  <div class="trust-agents">
-    <div class="trust-agent">
-      <div class="trust-agent-icon">🪽</div>
-      <span class="trust-agent-name">Hermes Workspace</span>
-    </div>
-    <div class="trust-agent">
-      <div class="trust-agent-icon">⚡</div>
-      <span class="trust-agent-name">Agent Zero</span>
-    </div>
-    <div class="trust-agent">
-      <div class="trust-agent-icon">🐍</div>
-      <span class="trust-agent-name">Python Agents</span>
-    </div>
-    <div class="trust-agent">
-      <div class="trust-agent-icon">🐳</div>
-      <span class="trust-agent-name">Docker Deployments</span>
-    </div>
-  </div>
-</div>
-
-<!-- FEATURES -->
+<!-- ── FEATURES ───────────────────────────────────────────────────────────── -->
 <section id="features">
   <div class="container">
-    <div class="section-label">Features</div>
-    <h2>Everything you need to support your clients</h2>
-    <p class="section-sub">Stop flying blind. Know exactly what's happening on every customer machine the moment something goes wrong.</p>
-
+    <div class="section-label">What You Get</div>
+    <h2>Everything done for you.</h2>
+    <p class="section-sub">No YouTube tutorials. No trial and error. Just a working AI agent on your machine from day one.</p>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">🔴</div>
-        <h3>Real-Time Error Detection</h3>
-        <p>The silent background agent catches crashes, API failures, and startup errors the instant they happen — before your customer even notices.</p>
+        <div class="feature-icon">🚀</div>
+        <h3>Done-For-You Setup</h3>
+        <p>We install and configure your agent — Agent Zero or Hermes Workspace — tuned for your use case. You just run it.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">⌨️</div>
-        <h3>Remote Terminal Access</h3>
-        <p>Run diagnostic commands on any online machine directly from your dashboard. Check logs, restart services, and fix issues without touching the customer's computer.</p>
+        <div class="feature-icon">👁️</div>
+        <h3>Live Monitoring</h3>
+        <p>A silent background service keeps your agent connected to our dashboard 24/7. We see issues before you do.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">💓</div>
-        <h3>Live Heartbeat Monitoring</h3>
-        <p>Every agent phones home every 30 seconds. See exactly who's online, who's offline, and who needs attention at a glance.</p>
+        <div class="feature-icon">🛠️</div>
+        <h3>Remote Support</h3>
+        <p>Something breaks? We can run diagnostics and fix problems on your machine remotely — no IT ticket, no waiting.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🖥</div>
-        <h3>Machine Health Dashboard</h3>
-        <p>Disk space, OS version, Docker status, agent version — all your client machine specs in one place, always up to date.</p>
+        <div class="feature-icon">🔄</div>
+        <h3>Always Up to Date</h3>
+        <p>We manage updates and improvements. Your agent stays current with the latest AI capabilities automatically.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🔑</div>
-        <h3>One-Click Client Onboarding</h3>
-        <p>Create a client, grab their install token, and share one script. The agent installs itself and starts reporting in under 60 seconds.</p>
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your agent runs on your own machine. Your data stays yours. We can only see system diagnostics — never your content.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🛡</div>
-        <h3>Secure & Silent</h3>
-        <p>The agent runs invisibly in the background. Only whitelisted diagnostic commands are permitted — never destructive operations. Your customers stay in control.</p>
+        <div class="feature-icon">💬</div>
+        <h3>Direct Access to Jay</h3>
+        <p>You get a real person — not a chatbot support queue. Book a call anytime to get help, ask questions, or expand your setup.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ── HOW IT WORKS ────────────────────────────────────────────────────────── -->
 <section id="how">
   <div class="container">
     <div class="section-label">How It Works</div>
-    <h2 style="text-align:center;margin-bottom:16px">Up and running in minutes</h2>
-    <p class="section-sub" style="margin:0 auto 60px;text-align:center">No servers to manage. No complex setup. Just install, connect, and monitor.</p>
-
+    <h2>Up and running in 3 steps.</h2>
+    <p class="section-sub">Simple process, zero friction. You don't need to know anything about AI to get started.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <h3>Add Your Client</h3>
-        <p>Create a client profile in your dashboard. You get a unique install token tied to that customer.</p>
+        <h3>Book a Free Call</h3>
+        <p>We chat for 15 minutes about your goals. I'll recommend the right agent and use case for your situation.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h3>Share the Script</h3>
-        <p>Send your customer the one-line install command. It bundles with your existing Hermes or Agent Zero install.</p>
+        <h3>We Set Everything Up</h3>
+        <p>Download your pre-configured agent package. Run one script. That's it — your agent is live and connected.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <h3>Agent Goes Live</h3>
-        <p>The liberty agent installs silently, auto-starts on boot, and connects to your dashboard within seconds.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <h3>Monitor & Fix</h3>
-        <p>Watch the live feed. When something breaks, remote in, run diagnostics, and push a fix — all without leaving your dashboard.</p>
+        <h3>We Monitor & Support</h3>
+        <p>The Liberty Agent runs silently in the background. We watch your setup and fix anything that goes wrong — remotely, instantly.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
+<!-- ── THE AGENTS ──────────────────────────────────────────────────────────── -->
+<section id="agents">
+  <div class="container">
+    <div class="section-label">The Agents</div>
+    <h2>Two powerful agents. We handle both.</h2>
+    <p class="section-sub">We'll help you pick the right one — or run both. Either way, it's set up right from the start.</p>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="agent-logo">🤖</div>
+          <div>
+            <h3>Agent Zero</h3>
+            <p>Autonomous AI that uses your computer like a developer</p>
+          </div>
+        </div>
+        <div class="agent-card-body">
+          <ul>
+            <li>Runs in a Docker container — safe and isolated</li>
+            <li>Browses the web, writes code, manages files</li>
+            <li>Creates tools and sub-agents to complete complex tasks</li>
+            <li>Works with any LLM — OpenAI, Claude, and more</li>
+            <li>Full terminal and browser access for real tasks</li>
+            <li>Pre-configured by us with your API keys & preferences</li>
+          </ul>
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="agent-logo">🪄</div>
+          <div>
+            <h3>Hermes Workspace</h3>
+            <p>AI workspace for chat, agents, memory & collaboration</p>
+          </div>
+        </div>
+        <div class="agent-card-body">
+          <ul>
+            <li>Beautiful web UI for chatting with multiple AI models</li>
+            <li>Persistent memory and project-based workspaces</li>
+            <li>Agent swarms — multiple AI agents working together</li>
+            <li>Built-in document editor, file browser, and skills</li>
+            <li>Runs locally — your data never leaves your machine</li>
+            <li>Pre-configured by us with all integrations ready</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ────────────────────────────────────────────────────────── -->
 <section id="testimonials">
   <div class="container">
-    <div class="section-label">Early Feedback</div>
-    <h2>What AI resellers are saying</h2>
-    <p class="section-sub">From the people who deploy AI agents to real customers every day.</p>
-
+    <div class="section-label">What Clients Say</div>
+    <h2>Real results, real people.</h2>
+    <p class="section-sub">Non-technical business owners who now run AI agents every day — without a single tech headache.</p>
     <div class="testimonials-grid">
       <div class="testimonial">
         <div class="stars">★★★★★</div>
-        <p class="testimonial-text">I used to spend hours on calls with customers trying to diagnose Docker issues. Now I can see the problem and fix it before they even message me.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">M</div>
+        <p class="testimonial-text">I had no idea how to set this up. Jay had Agent Zero running on my machine in under an hour. Now it handles my research and first drafts every morning.</p>
+        <div class="t-author">
+          <div class="t-avatar">M</div>
           <div>
-            <div class="testimonial-name">Marcus R.</div>
-            <div class="testimonial-role">AI Solutions Reseller</div>
+            <div class="t-name">Marcus T.</div>
+            <div class="t-role">Content Creator</div>
           </div>
         </div>
       </div>
       <div class="testimonial">
         <div class="stars">★★★★★</div>
-        <p class="testimonial-text">The install took me 10 minutes to set up for all 8 of my clients. The peace of mind is worth every penny.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">T</div>
+        <p class="testimonial-text">The remote support is the killer feature. Something broke on my end, Jay fixed it within minutes without me doing anything. That peace of mind is priceless.</p>
+        <div class="t-author">
+          <div class="t-avatar">S</div>
           <div>
-            <div class="testimonial-name">Tanya W.</div>
-            <div class="testimonial-role">Freelance AI Consultant</div>
+            <div class="t-name">Sandra K.</div>
+            <div class="t-role">E-commerce Owner</div>
           </div>
         </div>
       </div>
       <div class="testimonial">
         <div class="stars">★★★★★</div>
-        <p class="testimonial-text">Caught a disk-full error on a client machine at 2am. Fixed it remotely before they woke up. My clients think I'm a wizard.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">J</div>
+        <p class="testimonial-text">Hermes Workspace is incredible. I use it for client proposals, competitor research, everything. I couldn't have set it up myself — I'm not technical at all.</p>
+        <div class="t-author">
+          <div class="t-avatar">D</div>
           <div>
-            <div class="testimonial-name">James F.</div>
-            <div class="testimonial-role">AI Agency Owner</div>
+            <div class="t-name">David R.</div>
+            <div class="t-role">Marketing Consultant</div>
           </div>
         </div>
       </div>
@@ -722,98 +617,70 @@
   </div>
 </section>
 
-<!-- PRICING -->
-<section id="pricing">
-  <div class="container" style="text-align:center">
-    <div class="section-label">Pricing</div>
-    <h2>Simple, honest pricing</h2>
-    <p class="section-sub" style="margin:0 auto 60px">No hidden fees. Scale as you grow. Cancel anytime.</p>
-
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-tier">Starter</div>
-        <div class="price-amount"><sup>$</sup>0<sub>/mo</sub></div>
-        <p class="price-desc">Perfect for trying it out with your first few clients.</p>
-        <ul class="price-features">
-          <li>Up to 3 clients</li>
-          <li>Up to 5 machines</li>
-          <li>Error & heartbeat monitoring</li>
-          <li>Remote command terminal</li>
-          <li>7-day event history</li>
-        </ul>
-        <a href="/dashboard" class="price-cta price-cta-ghost">Get Started Free</a>
-      </div>
-
-      <div class="price-card featured">
-        <div class="price-badge">Most Popular</div>
-        <div class="price-tier">Professional</div>
-        <div class="price-amount"><sup>$</sup>49<sub>/mo</sub></div>
-        <p class="price-desc">For resellers actively growing their client base.</p>
-        <ul class="price-features">
-          <li>Unlimited clients</li>
-          <li>Unlimited machines</li>
-          <li>Error & heartbeat monitoring</li>
-          <li>Remote command terminal</li>
-          <li>90-day event history</li>
-          <li>Email alerts on errors</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="mailto:jay@alexanderai.site?subject=Alexander AI Pro" class="price-cta price-cta-primary">Get Professional →</a>
-      </div>
-
-      <div class="price-card">
-        <div class="price-tier">Agency</div>
-        <div class="price-amount"><sup>$</sup>149<sub>/mo</sub></div>
-        <p class="price-desc">White-label for agencies managing large client fleets.</p>
-        <ul class="price-features">
-          <li>Everything in Professional</li>
-          <li>White-label dashboard</li>
-          <li>Custom domain</li>
-          <li>API access</li>
-          <li>Dedicated onboarding call</li>
-          <li>SLA guarantee</li>
-        </ul>
-        <a href="mailto:jay@alexanderai.site?subject=Alexander AI Agency" class="price-cta price-cta-ghost">Contact Us</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA BANNER -->
-<section id="cta-banner">
+<!-- ── BOOK ────────────────────────────────────────────────────────────────── -->
+<section id="book">
   <div class="container">
-    <h2>Ready to stop flying blind?</h2>
-    <p>Join resellers who never get a "my AI is broken" call anymore.</p>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a href="/dashboard" class="btn-primary">Open Your Dashboard →</a>
-      <a href="mailto:jay@alexanderai.site" class="btn-ghost">Talk to Jay</a>
+    <div class="section-label">Get Started</div>
+    <h2>Pick a time. Let's talk.</h2>
+    <p class="section-sub">Both calls are free. No pressure, no pitch. Just an honest conversation about whether AI agents are right for you.</p>
+    <div class="book-cards">
+      <div class="book-card">
+        <span class="duration">15 min · Free</span>
+        <h3>Discovery Call</h3>
+        <p>Quick intro — we'll figure out the right agent for your goals and answer any questions you have.</p>
+        <button class="book-btn book-btn-primary"
+          data-cal-link="leprograms/discovery-call"
+          data-cal-namespace="discovery-call"
+          data-cal-config='{"layout":"month_view"}'>
+          📅 Book Discovery Call
+        </button>
+      </div>
+      <div class="book-card featured">
+        <span class="duration">30 min · Free</span>
+        <h3>AI Strategy Session</h3>
+        <p>Map out your full AI roadmap — automation opportunities, which agent fits best, and next steps to launch.</p>
+        <button class="book-btn book-btn-primary"
+          data-cal-link="leprograms/ai-strategy-session"
+          data-cal-namespace="strategy"
+          data-cal-config='{"layout":"month_view"}'>
+          🚀 Book Strategy Session
+        </button>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
 <footer>
-  <div class="logo">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-      <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#1E30AA"/>
-        <stop offset="50%" stop-color="#3050FF"/>
-        <stop offset="100%" stop-color="#5070FF"/>
-      </linearGradient></defs>
-      <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#lg2)"/>
-      <rect x="47" y="22" width="6" height="56" rx="3" fill="#FFD700"/>
-      <circle cx="50" cy="22" r="5" fill="#FFD700"/>
-    </svg>
-    Alexander AI
+  <div class="footer-logo">
+    <img src="https://raw.githubusercontent.com/Liberty-Emporium/Logos/main/Business%20Logo.png" alt="Alexander AI" />
+    Alexander AI Solutions
   </div>
-  <p style="color:var(--muted);font-size:13px">© 2026 Alexander AI Integrated Solutions. All rights reserved.</p>
-  <nav>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="mailto:jay@alexanderai.site">Contact</a>
+  <p>© 2026 Alexander AI Solutions. Built by Jay.</p>
+  <div class="footer-links">
     <a href="/dashboard">Dashboard</a>
-  </nav>
+    <a href="mailto:leprograms@protonmail.com">Contact</a>
+    <button style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);"
+      data-cal-link="leprograms/discovery-call"
+      data-cal-namespace="discovery-call"
+      data-cal-config='{"layout":"month_view"}'>
+      Book a Call
+    </button>
+  </div>
 </footer>
+
+<script type="text/javascript">
+  Cal("ui", "discovery-call", {
+    styles: { branding: { brandColor: "#00f0ff" } },
+    hideEventTypeDetails: false,
+    layout: "month_view",
+  });
+  Cal("ui", "strategy", {
+    styles: { branding: { brandColor: "#00f0ff" } },
+    hideEventTypeDetails: false,
+    layout: "month_view",
+  });
+</script>
 
 </body>
 </html>
