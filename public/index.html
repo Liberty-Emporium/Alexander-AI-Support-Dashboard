@@ -2,6 +2,7 @@
 <html lang="en" data-theme="scifi">
 <head>
   <meta charset="UTF-8" />
+  <script src="/socket.io/socket.io.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alexander AI — Support Dashboard</title>
   <link rel="icon" href="/favicon.svg" />
@@ -484,6 +485,7 @@ async function doLogin() {
     localStorage.setItem('aai_token', TOKEN);
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-name').textContent = '👤 ' + data.username;
+    connectAdminSocket();
     loadPage('dashboard');
   } else {
     document.getElementById('login-error').style.display = 'block';
@@ -709,25 +711,39 @@ async function runCommand() {
   const cmd = document.getElementById('cmd-input').value.trim();
   if (!cmd) return;
   const outputArea = document.getElementById('cmd-output-area');
-  outputArea.innerHTML = '<div class="cmd-output">Running…</div>';
+  outputArea.innerHTML = '<div class="cmd-output">⏳ Sending command…</div>';
 
   const res = await api('/machines/' + cmdMachineId + '/command', { method: 'POST', body: { cmd } });
   if (!res?.ok) {
-    outputArea.innerHTML = `<div class="cmd-output" style="color:var(--danger)">${esc(res?.error || 'Failed')}</div>`;
+    outputArea.innerHTML = `<div class="cmd-output" style="color:var(--danger)">${esc(res?.error || 'Failed — machine may be offline')}</div>`;
     return;
   }
 
-  // Poll for result (simple 3s wait)
-  outputArea.innerHTML = '<div class="cmd-output">Command sent — waiting for response…</div>';
-  setTimeout(async () => {
-    const m = await api('/machines/' + cmdMachineId);
-    const last = m?.commands?.[0];
-    if (last?.output) {
-      outputArea.innerHTML = `<div class="cmd-output">${esc(last.output)}</div>`;
-    } else {
-      outputArea.innerHTML = '<div class="cmd-output" style="color:var(--muted)">No output yet — check Events tab for response</div>';
+  // Real-time: wait for command_result via admin socket (with 15s timeout fallback)
+  outputArea.innerHTML = '<div class="cmd-output">⚡ Command sent — waiting for response…</div>';
+
+  const timeout = setTimeout(() => {
+    // Fallback: fetch from DB if socket didn't deliver
+    api('/machines/' + cmdMachineId).then(m => {
+      const last = m?.commands?.[0];
+      if (last?.output) {
+        outputArea.innerHTML = `<div class="cmd-output">${esc(last.output)}</div>`;
+      } else {
+        outputArea.innerHTML = '<div class="cmd-output" style="color:var(--muted)">No response received — check Events tab</div>';
+      }
+    });
+  }, 15000);
+
+  // One-shot listener — resolves as soon as the result arrives
+  function onResult(event) {
+    if (event.type === 'command_result' && event.machine_id === cmdMachineId) {
+      clearTimeout(timeout);
+      adminSocket.off('admin_event', onResult);
+      const color = event.returncode === 0 ? '' : 'color:var(--danger)';
+      outputArea.innerHTML = `<div class="cmd-output" style="${color}">${esc(event.output)}</div>`;
     }
-  }, 3500);
+  }
+  adminSocket.on('admin_event', onResult);
 }
 
 // ── Modals ─────────────────────────────────────────────────────────────────
@@ -743,10 +759,29 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Admin Socket.IO (real-time push from server) ─────────────────────────
+let adminSocket = null;
+
+function connectAdminSocket() {
+  if (adminSocket) return;
+  adminSocket = io({ query: { admin: '1' }, transports: ['websocket', 'polling'] });
+
+  adminSocket.on('connect', () => console.log('[admin-socket] connected'));
+  adminSocket.on('disconnect', () => console.log('[admin-socket] disconnected'));
+
+  adminSocket.on('admin_event', (event) => {
+    // Live dashboard refresh on connect/disconnect
+    if ((event.type === 'machine_online' || event.type === 'machine_offline') && currentPage === 'dashboard') {
+      loadPage('dashboard');
+    }
+  });
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────
 if (TOKEN) {
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('admin-name').textContent = '👤 jay';
+  connectAdminSocket();
   loadPage('dashboard');
 } else {
   // focus password on enter from username
