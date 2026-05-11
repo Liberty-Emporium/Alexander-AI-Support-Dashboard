@@ -544,7 +544,7 @@
         </div>
         <div class="agent-card-body check-cyan">
           <ul>
-            <li>Runs in a Docker container — safe and isolated</li>
+            <li>Runs natively on your machine — Python app, no Docker UI</li>
             <li>Browses the web, writes code, manages files</li>
             <li>Creates tools and sub-agents to complete complex tasks</li>
             <li>Works with any LLM — OpenAI, Claude, and more</li>
@@ -633,26 +633,34 @@
         <li>
           <div class="step-num step-num-az">1</div>
           <div class="step-body">
-            <h4>Install Docker Desktop</h4>
-            <p>Agent Zero runs safely inside Docker — a lightweight virtual sandbox. Download and install it for your operating system, then start it. You'll see the Docker whale icon in your taskbar when it's running.</p>
+            <h4>Install Python 3.11+</h4>
+            <p>Agent Zero is a Python app that runs directly on your machine. Install Python for your operating system if you don't have it already.</p>
             <div class="os-tabs">
-              <button class="ostab active" onclick="showOS('az-docker','win')">🪟 Windows</button>
-              <button class="ostab" onclick="showOS('az-docker','mac')">🍎 macOS</button>
-              <button class="ostab" onclick="showOS('az-docker','linux')">🐧 Linux</button>
+              <button class="ostab active" onclick="showOS('az-py','win')">🪟 Windows</button>
+              <button class="ostab" onclick="showOS('az-py','mac')">🍎 macOS</button>
+              <button class="ostab" onclick="showOS('az-py','linux')">🐧 Linux</button>
             </div>
-            <div id="az-docker-win" class="os-cmds active">
-              <div class="note-box">Download from <strong><a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com/products/docker-desktop</a></strong> → Install → Restart your computer → Open Docker Desktop and wait for the whale icon to say "Running".</div>
-            </div>
-            <div id="az-docker-mac" class="os-cmds">
-              <div class="note-box">Download from <strong><a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com/products/docker-desktop</a></strong> → Drag to Applications → Open Docker → Wait for whale icon in menu bar to say "Running".</div>
-            </div>
-            <div id="az-docker-linux" class="os-cmds">
-              <div class="icode">
-                <code>curl -fsSL https://get.docker.com | sh && sudo usermod -aG docker $USER</code>
-                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://get.docker.com | sh && sudo usermod -aG docker $USER')">Copy</button>
+            <div id="az-py-win" class="os-cmds active">
+              <div class="note-box">Download from <strong><a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a></strong> → Install → ✅ Check <strong>"Add Python to PATH"</strong> during install. Then verify in PowerShell:</div>
+              <div class="icode" style="margin-top:8px">
+                <code>python --version</code>
+                <button class="copy-btn" onclick="copyCode(this,'python --version')">Copy</button>
               </div>
-              <div class="note-box" style="margin-top:8px">Then <strong>log out and back in</strong> for the group change to take effect.</div>
             </div>
+            <div id="az-py-mac" class="os-cmds">
+              <div class="icode">
+                <code>brew install python@3.12</code>
+                <button class="copy-btn" onclick="copyCode(this,'brew install python@3.12')">Copy</button>
+              </div>
+              <div class="note-box" style="margin-top:8px">No Homebrew? Get it at <a href="https://brew.sh" target="_blank">brew.sh</a> first.</div>
+            </div>
+            <div id="az-py-linux" class="os-cmds">
+              <div class="icode">
+                <code>sudo apt update && sudo apt install python3 python3-pip python3-venv git -y</code>
+                <button class="copy-btn" onclick="copyCode(this,'sudo apt update && sudo apt install python3 python3-pip python3-venv git -y')">Copy</button>
+              </div>
+            </div>
+            <div class="note-box" style="margin-top:10px">⚡ <strong>Note:</strong> Agent Zero uses Docker only when it needs to safely run code or terminal commands — like a sandbox. You won't need to use Docker yourself. If you want that code-execution feature, install <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a> too — but it's optional to get started.</div>
           </div>
         </li>
 
@@ -667,14 +675,15 @@
         <li>
           <div class="step-num step-num-az">3</div>
           <div class="step-body">
-            <h4>Run the installer</h4>
-            <p>Paste the command for your operating system and press Enter. This downloads and starts Agent Zero automatically.</p>
+            <h4>Install &amp; launch Agent Zero</h4>
+            <p>Paste the command for your operating system. This clones Agent Zero, installs dependencies, and starts it — all in one go.</p>
             <div class="os-tabs">
               <button class="ostab active" onclick="showOS('az-install','win')">🪟 Windows</button>
               <button class="ostab" onclick="showOS('az-install','mac')">🍎 macOS</button>
               <button class="ostab" onclick="showOS('az-install','linux')">🐧 Linux</button>
             </div>
             <div id="az-install-win" class="os-cmds active">
+              <div class="note-box" style="margin-bottom:8px">Run in <strong>PowerShell</strong>:</div>
               <div class="icode">
                 <code>irm https://ps.agent-zero.ai | iex</code>
                 <button class="copy-btn" onclick="copyCode(this,'irm https://ps.agent-zero.ai | iex')">Copy</button>
@@ -692,6 +701,7 @@
                 <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
               </div>
             </div>
+            <div class="note-box" style="margin-top:10px">This installs Agent Zero as a <strong>native Python app</strong> on your machine. No virtual machines. No complicated setup.</div>
           </div>
         </li>
 
