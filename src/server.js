@@ -31,6 +31,9 @@ app.get("/", (req, res) => {
 app.get("/landing", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/landing.html"));
 });
+app.get("/install", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/install.html"));
+});
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
