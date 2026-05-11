@@ -14,7 +14,6 @@ const server = http.createServer(app);
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 app.post("/api/login", loginRoute);
@@ -25,18 +24,20 @@ app.use("/api", api);
 // ── Health ────────────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
-// ── Routes ────────────────────────────────────────────────────────────────────
-// Public — no auth
+// ── Named routes (must come before express.static to avoid index.html default) ─
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/landing.html"));
 });
 app.get("/landing", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/landing.html"));
 });
-
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
+
+// ── Static assets (JS, CSS, images, etc.) ────────────────────────────────────
+// index: false prevents express.static from auto-serving index.html for /
+app.use(express.static(path.join(__dirname, "../public"), { index: false }));
 
 // ── SPA fallback ──────────────────────────────────────────────────────────────
 app.get("*", (req, res) => {
