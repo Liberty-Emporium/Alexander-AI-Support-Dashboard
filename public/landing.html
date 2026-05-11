@@ -531,6 +531,8 @@
     <h2>Two powerful agents. We handle both.</h2>
     <p class="section-sub">We'll help you pick the right one — or run both. Either way, it's set up right from the start.</p>
     <div class="agents-grid">
+
+      <!-- Agent Zero -->
       <div class="agent-card">
         <div class="agent-card-header">
           <div class="agent-logo">🤖</div>
@@ -548,27 +550,33 @@
             <li>Full terminal and browser access for real tasks</li>
             <li>Pre-configured by us with your API keys & preferences</li>
           </ul>
-          <div class="install-block">
-            <div class="install-block-label">Quick Install</div>
-            <div class="code-block">
-              <span class="os-tag">🐧 Linux / 🍎 macOS</span>
+        </div>
+        <div class="agent-card-install">
+          <div class="install-label">⚡ Quick Install</div>
+          <div class="install-cmd">
+            <span class="install-os">🐧 Linux &amp; macOS</span>
+            <div class="install-row">
               <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
               <button class="copy-btn" onclick="copyCode(this, 'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
             </div>
-            <div class="code-block">
-              <span class="os-tag">🪟 Windows (PowerShell)</span>
+          </div>
+          <div class="install-cmd">
+            <span class="install-os">🪟 Windows (PowerShell)</span>
+            <div class="install-row">
               <code>irm https://ps.agent-zero.ai | iex</code>
               <button class="copy-btn" onclick="copyCode(this, 'irm https://ps.agent-zero.ai | iex')">Copy</button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Hermes Workspace -->
       <div class="agent-card">
         <div class="agent-card-header">
           <div class="agent-logo">🪄</div>
           <div>
             <h3>Hermes Workspace</h3>
-            <p>AI workspace for chat, agents, memory & collaboration</p>
+            <p>AI workspace for chat, agents, memory &amp; collaboration</p>
           </div>
         </div>
         <div class="agent-card-body">
@@ -580,21 +588,26 @@
             <li>Runs locally — your data never leaves your machine</li>
             <li>Pre-configured by us with all integrations ready</li>
           </ul>
-          <div class="install-block">
-            <div class="install-block-label">Quick Install</div>
-            <div class="code-block">
-              <span class="os-tag">🐧 Linux / 🍎 macOS</span>
+        </div>
+        <div class="agent-card-install">
+          <div class="install-label">⚡ Quick Install</div>
+          <div class="install-cmd">
+            <span class="install-os">🐧 Linux &amp; macOS</span>
+            <div class="install-row">
               <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
               <button class="copy-btn" onclick="copyCode(this, 'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
             </div>
-            <div class="code-block">
-              <span class="os-tag">🐳 Docker</span>
+          </div>
+          <div class="install-cmd">
+            <span class="install-os">🐳 Docker</span>
+            <div class="install-row">
               <code>docker run -p 80:80 -v hermes_data:/hermes liberty-emporium/hermes-workspace</code>
               <button class="copy-btn" onclick="copyCode(this, 'docker run -p 80:80 -v hermes_data:/hermes liberty-emporium/hermes-workspace')">Copy</button>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
