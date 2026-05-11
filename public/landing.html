@@ -613,6 +613,222 @@
   </div>
 </section>
 
+<!-- ── INSTALL INSTRUCTIONS ─────────────────────────────────────────────── -->
+<section id="instructions">
+  <div class="container">
+    <div class="section-label">Step-by-Step</div>
+    <h2>Full installation guide.</h2>
+    <p class="section-sub">Pick your agent below and follow along — no technical experience needed.</p>
+
+    <!-- Tabs -->
+    <div class="instructions-tabs">
+      <button class="itab active-az" onclick="switchAgent('az')">🤖 Agent Zero</button>
+      <button class="itab" onclick="switchAgent('hw')" id="tab-hw">🪄 Hermes Workspace</button>
+    </div>
+
+    <!-- ── AGENT ZERO PANEL ── -->
+    <div class="instructions-panel active" id="panel-az">
+      <ol class="steps-list">
+
+        <li>
+          <div class="step-num step-num-az">1</div>
+          <div class="step-body">
+            <h4>Install Docker Desktop</h4>
+            <p>Agent Zero runs safely inside Docker — a lightweight virtual sandbox. Download and install it for your operating system, then start it. You'll see the Docker whale icon in your taskbar when it's running.</p>
+            <div class="os-tabs">
+              <button class="ostab active" onclick="showOS('az-docker','win')">🪟 Windows</button>
+              <button class="ostab" onclick="showOS('az-docker','mac')">🍎 macOS</button>
+              <button class="ostab" onclick="showOS('az-docker','linux')">🐧 Linux</button>
+            </div>
+            <div id="az-docker-win" class="os-cmds active">
+              <div class="note-box">Download from <strong><a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com/products/docker-desktop</a></strong> → Install → Restart your computer → Open Docker Desktop and wait for the whale icon to say "Running".</div>
+            </div>
+            <div id="az-docker-mac" class="os-cmds">
+              <div class="note-box">Download from <strong><a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com/products/docker-desktop</a></strong> → Drag to Applications → Open Docker → Wait for whale icon in menu bar to say "Running".</div>
+            </div>
+            <div id="az-docker-linux" class="os-cmds">
+              <div class="icode">
+                <code>curl -fsSL https://get.docker.com | sh && sudo usermod -aG docker $USER</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://get.docker.com | sh && sudo usermod -aG docker $USER')">Copy</button>
+              </div>
+              <div class="note-box" style="margin-top:8px">Then <strong>log out and back in</strong> for the group change to take effect.</div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-az">2</div>
+          <div class="step-body">
+            <h4>Open a terminal</h4>
+            <p>Open <strong>PowerShell</strong> (Windows) or <strong>Terminal</strong> (macOS/Linux). You can search for it in your Start Menu or Spotlight.</p>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-az">3</div>
+          <div class="step-body">
+            <h4>Run the installer</h4>
+            <p>Paste the command for your operating system and press Enter. This downloads and starts Agent Zero automatically.</p>
+            <div class="os-tabs">
+              <button class="ostab active" onclick="showOS('az-install','win')">🪟 Windows</button>
+              <button class="ostab" onclick="showOS('az-install','mac')">🍎 macOS</button>
+              <button class="ostab" onclick="showOS('az-install','linux')">🐧 Linux</button>
+            </div>
+            <div id="az-install-win" class="os-cmds active">
+              <div class="icode">
+                <code>irm https://ps.agent-zero.ai | iex</code>
+                <button class="copy-btn" onclick="copyCode(this,'irm https://ps.agent-zero.ai | iex')">Copy</button>
+              </div>
+            </div>
+            <div id="az-install-mac" class="os-cmds">
+              <div class="icode">
+                <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
+              </div>
+            </div>
+            <div id="az-install-linux" class="os-cmds">
+              <div class="icode">
+                <code>curl -fsSL https://bash.agent-zero.ai | bash</code>
+                <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://bash.agent-zero.ai | bash')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-az">4</div>
+          <div class="step-body">
+            <h4>Open Agent Zero in your browser</h4>
+            <p>Once the installer finishes, open your browser and go to:</p>
+            <div class="icode">
+              <code>http://localhost:80</code>
+              <button class="copy-btn" onclick="copyCode(this,'http://localhost:80')">Copy</button>
+            </div>
+            <div class="note-box">You'll see the Agent Zero web interface. From here you can configure your AI provider (OpenAI, Claude, etc.) and start giving it tasks.</div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-az">5</div>
+          <div class="step-body">
+            <h4>Add your AI API key</h4>
+            <p>In the Agent Zero settings, add your OpenAI or Anthropic API key. Don't have one? <strong>We handle this for you</strong> as part of our setup service — just book a call.</p>
+            <div class="note-box">
+              <strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a><br/>
+              <strong>Anthropic (Claude):</strong> <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-az">6</div>
+          <div class="step-body">
+            <h4>You're live! 🎉</h4>
+            <p>Type a task in the chat and Agent Zero will get to work. It can browse the web, write code, manage files, and run commands — all from your browser.</p>
+            <div class="note-box">
+              <strong>Need help?</strong> Book a call with Jay and we'll get you fully configured — API keys, preferences, and your first real workflow — in under an hour.
+            </div>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <!-- ── HERMES WORKSPACE PANEL ── -->
+    <div class="instructions-panel" id="panel-hw">
+      <ol class="steps-list">
+
+        <li>
+          <div class="step-num step-num-hw">1</div>
+          <div class="step-body">
+            <h4>Check prerequisites</h4>
+            <p>Hermes Workspace needs <strong>Node.js 22+</strong>, <strong>git</strong>, and <strong>pnpm</strong>. Open a terminal and run this to check:</p>
+            <div class="icode purple">
+              <code>node --version && git --version && pnpm --version</code>
+              <button class="copy-btn" onclick="copyCode(this,'node --version && git --version && pnpm --version')">Copy</button>
+            </div>
+            <div class="note-box purple" style="margin-top:8px">If anything is missing: <a href="https://nodejs.org" target="_blank">nodejs.org</a> for Node · <code>npm install -g pnpm</code> for pnpm · <a href="https://git-scm.com" target="_blank">git-scm.com</a> for git.</div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-hw">2</div>
+          <div class="step-body">
+            <h4>Run the installer</h4>
+            <p>Paste this in your terminal and press Enter. It installs everything — hermes-agent, the workspace UI, and all dependencies.</p>
+            <div class="icode purple">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash</code>
+              <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash')">Copy</button>
+            </div>
+            <div class="note-box purple" style="margin-top:8px">This takes 2–5 minutes. You'll see progress in the terminal. Wait for <strong>"Install complete!"</strong> before moving on.</div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-hw">3</div>
+          <div class="step-body">
+            <h4>Start Hermes (one command)</h4>
+            <p>Run this to start both the gateway and the UI at the same time:</p>
+            <div class="icode purple">
+              <code>curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash</code>
+              <button class="copy-btn" onclick="copyCode(this,'curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash')">Copy</button>
+            </div>
+            <p style="margin-top:10px">Or manually in two terminals:</p>
+            <div class="icode purple" style="margin-bottom:8px">
+              <code>hermes gateway run</code>
+              <button class="copy-btn" onclick="copyCode(this,'hermes gateway run')">Copy</button>
+            </div>
+            <div class="icode purple">
+              <code>cd ~/hermes-workspace && pnpm dev</code>
+              <button class="copy-btn" onclick="copyCode(this,'cd ~/hermes-workspace && pnpm dev')">Copy</button>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-hw">4</div>
+          <div class="step-body">
+            <h4>Open the workspace in your browser</h4>
+            <p>Go to:</p>
+            <div class="icode purple">
+              <code>http://localhost:3000</code>
+              <button class="copy-btn" onclick="copyCode(this,'http://localhost:3000')">Copy</button>
+            </div>
+            <div class="note-box purple">You'll see the Hermes Workspace UI. Create your first session, connect an AI provider, and start chatting!</div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-hw">5</div>
+          <div class="step-body">
+            <h4>Add your AI API key</h4>
+            <p>In Settings → Providers, add your API key for OpenAI, Claude, or any other supported provider.</p>
+            <div class="note-box purple">
+              <strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a><br/>
+              <strong>Anthropic (Claude):</strong> <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a><br/>
+              <strong>We handle this for you</strong> as part of our setup service.
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="step-num step-num-hw">6</div>
+          <div class="step-body">
+            <h4>You're live! 🎉</h4>
+            <p>Hermes Workspace is running on your machine. Your data never leaves your computer. Start a chat, use multiple AI models side by side, or set up agent swarms to tackle big tasks.</p>
+            <div class="note-box purple">
+              <strong>Need help?</strong> Book a call and Jay will configure everything for you — providers, memory, skills, and your first workflow — all set up and ready to go.
+            </div>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- ── TESTIMONIALS ────────────────────────────────────────────────────────── -->
 <section id="testimonials">
   <div class="container">
@@ -720,6 +936,34 @@
     hideEventTypeDetails: false,
     layout: "month_view",
   });
+
+
+// ── Instructions tabs ─────────────────────────────────────────────────────
+function switchAgent(agent) {
+  document.querySelectorAll('.instructions-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.itab').forEach(t => t.classList.remove('active-az','active-hw'));
+  document.getElementById('panel-' + agent).classList.add('active');
+  var tab = agent === 'az'
+    ? document.querySelector('.itab:first-child')
+    : document.getElementById('tab-hw');
+  tab.classList.add(agent === 'az' ? 'active-az' : 'active-hw');
+}
+
+function showOS(group, os) {
+  // Hide all cmds in this group
+  document.querySelectorAll('[id^="' + group + '-"]').forEach(el => el.classList.remove('active'));
+  // Deactivate all tabs in the nearest .os-tabs
+  var target = document.getElementById(group + '-' + os);
+  if (!target) return;
+  var container = target.closest('.step-body');
+  if (container) {
+    container.querySelectorAll('.ostab').forEach(t => t.classList.remove('active','active-purple'));
+    // Activate clicked tab
+    var clicked = Array.from(container.querySelectorAll('.ostab')).find(t => t.getAttribute('onclick').includes("'" + os + "'"));
+    if (clicked) clicked.classList.add(container.closest('#panel-hw') ? 'active-purple' : 'active');
+  }
+  target.classList.add('active');
+}
 
 // ── Copy to clipboard ─────────────────────────────────────────────────────
 function copyCode(btn, text) {
