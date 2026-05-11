@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install Guide — Alexander AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #04080f;
+      --surface: #080f1c;
+      --card: #0c1628;
+      --border: #162840;
+      --text: #e8f4ff;
+      --muted: #4d7a96;
+      --cyan: #00e5ff;
+      --purple: #b46fff;
+      --green: #00ffb3;
+      --dark-cyan: rgba(0,229,255,0.08);
+      --dark-purple: rgba(180,111,255,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══════════════════════════════════════════
+       TOP BAR
+    ══════════════════════════════════════════ */
+    .topbar {
+      background: rgba(4,8,15,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 16px; color: var(--text);
+      text-decoration: none;
+    }
+    .topbar-logo img { height: 32px; border-radius: 6px; }
+    .topbar-back {
+      color: var(--muted); font-size: 14px; font-weight: 600;
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: color .15s;
+    }
+    .topbar-back:hover { color: var(--cyan); }
+
+    /* ══════════════════════════════════════════
+       AGENT PICKER — Step 1
+    ══════════════════════════════════════════ */
+    .page { max-width: 860px; margin: 0 auto; padding: 48px 5% 80px; width: 100%; }
+
+    .guide-title {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800; margin-bottom: 8px;
+      letter-spacing: -.02em;
+    }
+    .guide-sub { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.6; }
+
+    /* breadcrumb */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--muted);
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .breadcrumb .crumb {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      font-weight: 600;
+      cursor: default;
+    }
+    .breadcrumb .crumb.done { border-color: rgba(0,255,179,0.3); color: var(--green); }
+    .breadcrumb .crumb.active { border-color: rgba(0,229,255,0.4); color: var(--cyan); background: rgba(0,229,255,0.06); }
+    .breadcrumb .arrow { color: var(--border); font-size: 16px; }
+
+    /* Step heading */
+    .step-heading {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .step-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── AGENT PICK CARDS ── */
+    .agent-pick-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 0;
+    }
+    @media (max-width: 560px) { .agent-pick-grid { grid-template-columns: 1fr; } }
+
+    .agent-pick-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: left;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .agent-pick-card:hover { transform: translateY(-3px); }
+    .agent-pick-card.az:hover,
+    .agent-pick-card.az.selected {
+      border-color: var(--cyan);
+      background: var(--dark-cyan);
+      box-shadow: 0 0 40px rgba(0,229,255,0.12);
+    }
+    .agent-pick-card.hw:hover,
+    .agent-pick-card.hw.selected {
+      border-color: var(--purple);
+      background: var(--dark-purple);
+      box-shadow: 0 0 40px rgba(180,111,255,0.12);
+    }
+    .agent-pick-top { display: flex; align-items: center; gap: 14px; }
+    .agent-pick-emoji {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
+    }
+    .az .agent-pick-emoji { background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.25); }
+    .hw .agent-pick-emoji { background: rgba(180,111,255,0.1); border: 1px solid rgba(180,111,255,0.25); }
+    .agent-pick-name { font-size: 20px; font-weight: 800; }
+    .agent-pick-tagline { font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .agent-pick-features { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .agent-pick-features li {
+      font-size: 13px; color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .agent-pick-features li::before {
+      content: '✓'; font-size: 11px; font-weight: 800;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .az .agent-pick-features li::before { color: var(--cyan); background: rgba(0,229,255,0.1); }
+    .hw .agent-pick-features li::before { color: var(--purple); background: rgba(180,111,255,0.1); }
+    .agent-pick-btn {
+      display: block; width: 100%; padding: 12px;
+      border-radius: 10px; border: none; font-family: inherit;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: all .2s;
+    }
+    .az .agent-pick-btn { background: rgba(0,229,255,0.12); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
+    .az .agent-pick-btn:hover { background: var(--cyan); color: #000; }
+    .hw .agent-pick-btn { background: rgba(180,111,255,0.12); color: var(--purple); border: 1px solid rgba(180,111,255,0.3); }
+    .hw .agent-pick-btn:hover { background: var(--purple); color: #000; }
+
+    /* ══════════════════════════════════════════
+       OS PICKER — Step 2
+    ══════════════════════════════════════════ */
+    .os-pick-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    @media (max-width: 480px) { .os-pick-grid { grid-template-columns: 1fr; } }
+
+    .os-pick-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px; padding: 20px 16px;
+      cursor: pointer; text-align: center;
+      transition: all .2s; font-family: inherit;
+    }
+    .os-pick-card:hover { transform: translateY(-2px); }
+    .os-pick-card.az-os.selected { border-color: var(--cyan); background: var(--dark-cyan); box-shadow: 0 0 30px rgba(0,229,255,0.1); }
+    .os-pick-card.hw-os.selected { border-color: var(--purple); background: var(--dark-purple); box-shadow: 0 0 30px rgba(180,111,255,0.1); }
+    .os-pick-card.az-os:hover { border-color: rgba(0,229,255,0.4); }
+    .os-pick-card.hw-os:hover { border-color: rgba(180,111,255,0.4); }
+    .os-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+    .os-name { font-size: 15px; font-weight: 700; color: var(--text); }
+
+    /* ══════════════════════════════════════════
+       STEPS — Step 3
+    ══════════════════════════════════════════ */
+    .steps-container { display: flex; flex-direction: column; gap: 0; }
+    .install-step {
+      display: flex; gap: 20px;
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .install-step:last-child { border-bottom: none; }
+    .install-step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      font-size: 18px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .az-step .install-step-num {
+      background: rgba(0,229,255,0.1);
+      border: 2px solid rgba(0,229,255,0.4);
+      color: var(--cyan);
+    }
+    .hw-step .install-step-num {
+      background: rgba(180,111,255,0.1);
+      border: 2px solid rgba(180,111,255,0.4);
+      color: var(--purple);
+    }
+    .install-step-body { flex: 1; }
+    .install-step-body h3 {
+      font-size: 17px; font-weight: 800;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .install-step-body p {
+      font-size: 14px; color: var(--muted);
+      line-height: 1.7; margin-bottom: 12px;
+    }
+    .install-step-body p:last-child { margin-bottom: 0; }
+
+    /* Command box */
+    .cmd-box {
+      display: flex; align-items: stretch;
+      background: #020810;
+      border-radius: 10px; overflow: hidden;
+      margin: 12px 0;
+    }
+    .cmd-box.az-cmd { border: 2px solid rgba(0,229,255,0.2); }
+    .cmd-box.hw-cmd { border: 2px solid rgba(180,111,255,0.2); }
+    .cmd-box.az-cmd:hover { border-color: rgba(0,229,255,0.45); }
+    .cmd-box.hw-cmd:hover { border-color: rgba(180,111,255,0.45); }
+    .cmd-box code {
+      flex: 1; display: block;
+      font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 13px; padding: 14px 16px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .az-cmd code { color: var(--cyan); }
+    .hw-cmd code { color: var(--purple); }
+    .cmd-copy {
+      flex-shrink: 0; border: none;
+      font-family: inherit; font-size: 12px; font-weight: 800;
+      padding: 0 18px; cursor: pointer; letter-spacing: .04em;
+      text-transform: uppercase; transition: all .15s;
+    }
+    .az-cmd .cmd-copy { background: rgba(0,229,255,0.08); color: var(--cyan); border-left: 1px solid rgba(0,229,255,0.15); }
+    .az-cmd .cmd-copy:hover { background: var(--cyan); color: #000; }
+    .hw-cmd .cmd-copy { background: rgba(180,111,255,0.08); color: var(--purple); border-left: 1px solid rgba(180,111,255,0.15); }
+    .hw-cmd .cmd-copy:hover { background: var(--purple); color: #000; }
+    .cmd-copy.copied { background: rgba(0,255,179,0.15) !important; color: var(--green) !important; }
+
+    /* Note/tip box */
+    .tip-box {
+      border-radius: 10px; padding: 13px 16px;
+      font-size: 13px; line-height: 1.65;
+      margin: 8px 0;
+    }
+    .az-tip { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.15); color: var(--muted); }
+    .hw-tip { background: rgba(180,111,255,0.04); border: 1px solid rgba(180,111,255,0.15); color: var(--muted); }
+    .tip-box strong { color: var(--text); }
+    .tip-box a { color: var(--cyan); }
+    .hw-tip a { color: var(--purple); }
+
+    /* Help footer */
+    .help-footer {
+      margin-top: 40px; padding: 22px 24px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 14px;
+    }
+    .az-help { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.2); }
+    .hw-help { background: rgba(180,111,255,0.04); border: 1px solid rgba(180,111,255,0.2); }
+    .help-footer span { font-size: 15px; font-weight: 600; }
+    .help-btn {
+      padding: 11px 22px; border-radius: 9px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none; transition: all .2s; text-decoration: none;
+      display: inline-block;
+    }
+    .az-help .help-btn { background: var(--cyan); color: #000; }
+    .hw-help .help-btn { background: var(--purple); color: #000; }
+    .help-btn:hover { transform: translateY(-1px); opacity: .9; }
+
+    /* ══════════════════════════════════════════
+       SHOW / HIDE SECTIONS
+    ══════════════════════════════════════════ */
+    .section { display: none; }
+    .section.show { display: block; }
+
+    /* ══════════════════════════════════════════
+       DONE SCREEN
+    ══════════════════════════════════════════ */
+    .done-screen {
+      text-align: center; padding: 60px 24px;
+    }
+    .done-icon { font-size: 64px; margin-bottom: 20px; }
+    .done-screen h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+    .done-screen p { font-size: 16px; color: var(--muted); max-width: 440px; margin: 0 auto 32px; line-height: 1.7; }
+    .done-url {
+      display: inline-block;
+      background: #020810; border: 2px solid rgba(0,229,255,0.3);
+      border-radius: 10px; padding: 14px 24px;
+      font-family: monospace; font-size: 16px; color: var(--cyan);
+      margin-bottom: 32px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a class="topbar-logo" href="/">
+    <img src="https://raw.githubusercontent.com/Liberty-Emporium/Logos/main/Business%20Logo.png" alt="Alexander AI" />
+    Alexander AI
+  </a>
+  <a class="topbar-back" href="/">← Back to Home</a>
+</div>
+
+<div class="page">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb" id="breadcrumb">
+    <div class="crumb active" id="bc1">1 · Pick Agent</div>
+    <span class="arrow">›</span>
+    <div class="crumb" id="bc2">2 · Pick OS</div>
+    <span class="arrow">›</span>
+    <div class="crumb" id="bc3">3 · Install</div>
+  </div>
+
+  <h1 class="guide-title">Install Your AI Agent</h1>
+  <p class="guide-sub">Follow the steps below — pick your agent, pick your computer, and you'll be up and running in minutes.</p>
+
+  <!-- ══════════════════════════
+       STEP 1 — PICK AGENT
+  ══════════════════════════ -->
+  <div class="section show" id="step1">
+    <div class="step-heading">Step 1 — Which agent do you want to install?</div>
+    <div class="agent-pick-grid">
+
+      <!-- Agent Zero -->
+      <div class="agent-pick-card az" onclick="pickAgent('az')">
+        <div class="agent-pick-top">
+          <div class="agent-pick-emoji">🤖</div>
+          <div>
+            <div class="agent-pick-name">Agent Zero</div>
+            <div class="agent-pick-tagline">Autonomous AI that works like a developer</div>
+          </div>
+        </div>
+        <ul class="agent-pick-features">
+          <li>Browses the web & writes code for you</li>
+          <li>Works with OpenAI, Claude & more</li>
+          <li>Runs as a Python app on your machine</li>
+          <li>Pre-configured by us — ready to go</li>
+        </ul>
+        <button class="agent-pick-btn">Install Agent Zero →</button>
+      </div>
+
+      <!-- Hermes Workspace -->
+      <div class="agent-pick-card hw" onclick="pickAgent('hw')">
+        <div class="agent-pick-top">
+          <div class="agent-pick-emoji">🪄</div>
+          <div>
+            <div class="agent-pick-name">Hermes Workspace</div>
+            <div class="agent-pick-tagline">AI workspace for chat, memory & collaboration</div>
+          </div>
+        </div>
+        <ul class="agent-pick-features">
+          <li>Beautiful web UI with multiple AI models</li>
+          <li>Persistent memory & project workspaces</li>
+          <li>100% local — your data never leaves</li>
+          <li>Pre-configured by us — ready to go</li>
+        </ul>
+        <button class="agent-pick-btn">Install Hermes →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       STEP 2 — PICK OS
+  ══════════════════════════ -->
+  <div class="section" id="step2">
+    <div class="step-heading" id="step2-heading">Step 2 — What computer are you using?</div>
+    <div class="os-pick-grid" id="os-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       STEP 3 — INSTALL STEPS
+  ══════════════════════════ -->
+  <div class="section" id="step3">
+    <div class="step-heading" id="step3-heading">Step 3 — Follow these steps</div>
+    <div class="steps-container" id="steps-body">
+      <!-- filled by JS -->
+    </div>
+    <div id="help-footer-container"></div>
+  </div>
+
+</div>
+
+<script>
+var currentAgent = null;
+var currentOS = null;
+
+// ── Step data ────────────────────────────────────────────────────────────
+
+var STEPS = {
+  az: {
+    win: [
+      {
+        title: "Open PowerShell",
+        body: "Click the Windows <strong>Start button</strong> → type <strong>PowerShell</strong> → right-click it → click <strong>Run as Administrator</strong> → click Yes.<br><br>A dark window will open. That's your terminal.",
+        tip: "💡 It must say <strong>Administrator</strong> in the title bar for the install to work."
+      },
+      {
+        title: "Copy this command and paste it in, then press Enter",
+        body: "This is the official Agent Zero installer for Windows. It installs everything automatically.",
+        cmd: "irm https://ps.agent-zero.ai | iex",
+        tip: "💡 To paste: <strong>right-click</strong> anywhere inside the dark window, or press <strong>Ctrl + V</strong>."
+      },
+      {
+        title: "Wait for it to finish",
+        body: "The installer will download and set up Agent Zero. This takes 2–5 minutes. You'll see text scrolling — that's normal. Wait until you see a <strong>success message</strong>.",
+        tip: "⚠️ Don't close the window while it's running."
+      },
+      {
+        title: "Open Agent Zero in your browser",
+        body: "Once the install is done, open your browser (Chrome, Edge, Firefox) and go to:",
+        cmd: "http://localhost:80",
+        tip: "✅ Agent Zero is running! You'll see its web interface where you can give it tasks."
+      },
+      {
+        title: "Add your AI API key",
+        body: "In Agent Zero's Settings, add your OpenAI or Anthropic API key so it can think and respond.",
+        tip: "💡 <strong>Don't have a key?</strong> We set this up for you as part of our service — <a href='https://cal.com/leprograms/discovery-call' target='_blank'>book a call</a> and Jay handles it."
+      }
+    ],
+    mac: [
+      {
+        title: "Open Terminal",
+        body: "Press <strong>Command (⌘) + Space</strong> on your keyboard → type <strong>Terminal</strong> → press Enter.<br><br>A window with text will open. That's your terminal."
+      },
+      {
+        title: "Copy this command and paste it in, then press Enter",
+        body: "This is the official Agent Zero installer for Mac. It installs everything automatically.",
+        cmd: "curl -fsSL https://bash.agent-zero.ai | bash",
+        tip: "💡 To paste in Terminal: press <strong>Command (⌘) + V</strong>."
+      },
+      {
+        title: "Wait for it to finish",
+        body: "The installer will run. This takes 2–5 minutes. Wait until you see a <strong>success message</strong>.",
+        tip: "⚠️ Don't close the Terminal window while it's running."
+      },
+      {
+        title: "Open Agent Zero in your browser",
+        body: "Once done, open your browser and go to:",
+        cmd: "http://localhost:80",
+        tip: "✅ Agent Zero is running! You'll see its web interface."
+      },
+      {
+        title: "Add your AI API key",
+        body: "In Agent Zero's Settings, add your OpenAI or Anthropic API key.",
+        tip: "💡 <strong>Don't have a key?</strong> <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
+      }
+    ],
+    linux: [
+      {
+        title: "Open a Terminal",
+        body: "Press <strong>Ctrl + Alt + T</strong> on your keyboard. A terminal window will open."
+      },
+      {
+        title: "Copy this command and paste it in, then press Enter",
+        cmd: "curl -fsSL https://bash.agent-zero.ai | bash",
+        tip: "💡 To paste in Terminal: press <strong>Ctrl + Shift + V</strong>."
+      },
+      {
+        title: "Wait for it to finish — then open your browser",
+        body: "Once done, go to:",
+        cmd: "http://localhost:80",
+        tip: "✅ Agent Zero is running!"
+      },
+      {
+        title: "Add your AI API key",
+        body: "Go to Settings inside Agent Zero and add your API key.",
+        tip: "💡 <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
+      }
+    ]
+  },
+  hw: {
+    win: [
+      {
+        title: "Open PowerShell as Administrator",
+        body: "Click the Windows <strong>Start button</strong> → type <strong>PowerShell</strong> → right-click it → click <strong>Run as Administrator</strong> → click Yes."
+      },
+      {
+        title: "Copy this command and paste it in, then press Enter",
+        body: "This installs <strong>everything automatically</strong> — Node.js, Git, Hermes Workspace — and creates a desktop shortcut called <strong>\"Start Hermes\"</strong>.",
+        cmd: "irm https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install-hermes-windows.ps1 | iex",
+        tip: "💡 To paste: <strong>right-click</strong> inside the window, or press <strong>Ctrl + V</strong>. This takes 3–5 minutes."
+      },
+      {
+        title: "Wait for \"INSTALL COMPLETE!\" then press Enter to launch",
+        body: "When the install finishes you'll see <strong>INSTALL COMPLETE!</strong> in green. Press Enter and Hermes will open in your browser automatically.",
+        tip: "✅ From now on, just double-click <strong>\"Start Hermes\"</strong> on your Desktop every time you want to use it."
+      },
+      {
+        title: "Add your AI API key",
+        body: "In Hermes, go to <strong>Settings → Providers</strong> and add your API key for OpenAI or Claude.",
+        tip: "💡 <strong>Don't have one?</strong> <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets it up for you."
+      }
+    ],
+    mac: [
+      {
+        title: "Open Terminal",
+        body: "Press <strong>Command (⌘) + Space</strong> → type <strong>Terminal</strong> → press Enter."
+      },
+      {
+        title: "Run the installer — paste this and press Enter",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash",
+        tip: "💡 Paste with <strong>Command (⌘) + V</strong>. Wait for <strong>\"Install complete!\"</strong> before the next step."
+      },
+      {
+        title: "Start Hermes — paste this and press Enter",
+        body: "This starts everything and opens Hermes in your browser:",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash",
+        tip: "✅ Hermes will open at <strong>http://localhost:3000</strong> automatically."
+      },
+      {
+        title: "Add your AI API key",
+        body: "In Hermes, go to <strong>Settings → Providers</strong> and add your API key.",
+        tip: "💡 <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
+      }
+    ],
+    linux: [
+      {
+        title: "Open a Terminal",
+        body: "Press <strong>Ctrl + Alt + T</strong>."
+      },
+      {
+        title: "Run the installer",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash",
+        tip: "💡 Paste with <strong>Ctrl + Shift + V</strong>. Wait for <strong>\"Install complete!\"</strong>."
+      },
+      {
+        title: "Start Hermes",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash",
+        tip: "✅ Hermes opens at <strong>http://localhost:3000</strong>"
+      },
+      {
+        title: "Add your AI API key",
+        body: "Go to <strong>Settings → Providers</strong> inside Hermes.",
+        tip: "💡 <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
+      }
+    ]
+  }
+};
+
+var OS_LABELS = {
+  win:   { icon: '🪟', name: 'Windows' },
+  mac:   { icon: '🍎', name: 'Mac' },
+  linux: { icon: '🐧', name: 'Linux' }
+};
+
+// ── Navigation ───────────────────────────────────────────────────────────
+
+function pickAgent(agent) {
+  currentAgent = agent;
+  var col = agent === 'az' ? 'var(--cyan)' : 'var(--purple)';
+  // Breadcrumb
+  document.getElementById('bc1').classList.remove('active');
+  document.getElementById('bc1').classList.add('done');
+  document.getElementById('bc2').classList.add('active');
+  // Show step 2
+  document.getElementById('step1').classList.remove('show');
+  document.getElementById('step2').classList.add('show');
+  // Build OS grid
+  var grid = document.getElementById('os-grid');
+  grid.innerHTML = '';
+  ['win','mac','linux'].forEach(function(os) {
+    var btn = document.createElement('button');
+    btn.className = 'os-pick-card ' + (agent === 'az' ? 'az-os' : 'hw-os');
+    btn.innerHTML = '<span class="os-icon">' + OS_LABELS[os].icon + '</span><span class="os-name">' + OS_LABELS[os].name + '</span>';
+    btn.onclick = function() { pickOS(os); };
+    grid.appendChild(btn);
+  });
+  document.getElementById('step2-heading').textContent = 'Step 2 — What computer are you using?';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function pickOS(os) {
+  currentOS = os;
+  // Breadcrumb
+  document.getElementById('bc2').classList.remove('active');
+  document.getElementById('bc2').classList.add('done');
+  document.getElementById('bc3').classList.add('active');
+  // Show step 3
+  document.getElementById('step2').classList.remove('show');
+  document.getElementById('step3').classList.add('show');
+  // Build steps
+  buildSteps(currentAgent, os);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function buildSteps(agent, os) {
+  var steps = STEPS[agent][os];
+  var col = agent === 'az' ? 'az' : 'hw';
+  var stepClass = col + '-step';
+  var cmdClass = col + '-cmd';
+  var tipClass = col + '-tip';
+  var heading = (agent === 'az' ? '🤖 Agent Zero' : '🪄 Hermes Workspace')
+    + ' — ' + OS_LABELS[os].icon + ' ' + OS_LABELS[os].name + ' Install Steps';
+  document.getElementById('step3-heading').textContent = heading;
+
+  var container = document.getElementById('steps-body');
+  container.innerHTML = '';
+  steps.forEach(function(step, i) {
+    var div = document.createElement('div');
+    div.className = 'install-step ' + stepClass;
+    var numDiv = '<div class="install-step-num">' + (i+1) + '</div>';
+    var bodyHtml = '<div class="install-step-body">';
+    bodyHtml += '<h3>' + step.title + '</h3>';
+    if (step.body) bodyHtml += '<p>' + step.body + '</p>';
+    if (step.cmd) {
+      var cmdId = 'cmd-' + i;
+      bodyHtml += '<div class="cmd-box ' + cmdClass + '">';
+      bodyHtml += '<code id="' + cmdId + '">' + escHtml(step.cmd) + '</code>';
+      bodyHtml += '<button class="cmd-copy" onclick="doCopy(this,\'' + escAttr(step.cmd) + '\')">📋 Copy</button>';
+      bodyHtml += '</div>';
+    }
+    if (step.tip) bodyHtml += '<div class="tip-box ' + tipClass + '">' + step.tip + '</div>';
+    bodyHtml += '</div>';
+    div.innerHTML = numDiv + bodyHtml;
+    container.appendChild(div);
+  });
+
+  // Help footer
+  var foot = document.getElementById('help-footer-container');
+  foot.innerHTML = '<div class="help-footer ' + col + '-help">'
+    + '<span>😅 Something not working?</span>'
+    + '<a class="help-btn" href="https://cal.com/leprograms/discovery-call" target="_blank">Book a free call with Jay →</a>'
+    + '</div>';
+}
+
+function doCopy(btn, text) {
+  navigator.clipboard.writeText(text).catch(function() {
+    var t = document.createElement('textarea');
+    t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.select(); document.execCommand('copy');
+    document.body.removeChild(t);
+  });
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  setTimeout(function() { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+</script>
+</body>
+</html>
