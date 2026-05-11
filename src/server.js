@@ -26,7 +26,11 @@ app.use("/api", api);
 app.get("/health", (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+// Public — no auth
 app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/landing.html"));
+});
+app.get("/landing", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/landing.html"));
 });
 
