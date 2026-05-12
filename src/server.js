@@ -7,8 +7,7 @@ const path = require("path");
 const { seedAdminIfNeeded, loginRoute, requireAuth } = require("./auth");
 const { initSocket } = require("./socket");
 const api = require("./api");
-const db = require("./db");
-const bcrypt = require("bcryptjs");
+
 
 const app = express();
 const server = http.createServer(app);
@@ -26,14 +25,6 @@ app.use("/api", api);
 // ── Health ────────────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
-// TEMP: one-time password reset — will be removed after use
-app.post("/api/reset-admin", (req, res) => {
-  const { secret, password } = req.body || {};
-  if (secret !== "echo-reset-2026") return res.status(403).json({ error: "nope" });
-  const hash = bcrypt.hashSync(password, 10);
-  db.prepare("UPDATE admins SET password = ? WHERE username = 'jay'").run(hash);
-  res.json({ ok: true, message: "Password updated" });
-});
 
 // ── Named routes (must come before express.static to avoid index.html default) ─
 app.get("/", (req, res) => {
