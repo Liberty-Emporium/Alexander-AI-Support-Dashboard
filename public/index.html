@@ -594,8 +594,16 @@ async function viewClient(id) {
               <td>${esc(m.agent_type||'—')}</td>
               <td style="color:${m.disk_free_gb < 5 ? 'var(--danger)' : 'var(--success)'}">${m.disk_free_gb != null ? m.disk_free_gb + ' GB' : '—'}</td>
               <td><span class="dot dot-${m.online ? 'online' : 'offline'}"></span>${m.online ? 'Online' : 'Offline'}</td>
+              <td id="ts-cell-${m.machine_id}">${m.tailscale_connected
+                ? `<span style="color:#00ccff;font-size:12px" title="${esc(m.tailscale_ip||'')}">🔒 ${esc(m.tailscale_ip||'connected')}</span>`
+                : `<span style="color:var(--muted);font-size:12px">—</span>`}</td>
               <td style="color:var(--muted);font-size:12px">${m.last_seen?.slice(0,16)||'—'}</td>
-              <td><button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button></td>
+              <td>
+                <button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button>
+                ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#00ccff;margin-left:4px" onclick="navigator.clipboard.writeText('${m.tailscale_ip||''}')" title="Copy Tailscale IP">TS IP</button>` : ''}
+              </td>
+            </tr>
+          `).join('') : `<tr><td colspan="10"><div class="empty">No machines connected yet</div></td></tr>`}
             </tr>
           `).join('') : `<tr><td colspan="8"><div class="empty">No machines connected yet</div></td></tr>`}
         </tbody>
@@ -638,7 +646,7 @@ async function renderMachines(el) {
   el.innerHTML = `
     <div class="card">
       <table>
-        <thead><tr><th>Hostname</th><th>Client</th><th>OS</th><th>Agent</th><th>Version</th><th>Disk Free</th><th>Status</th><th>Last Seen</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Hostname</th><th>Client</th><th>OS</th><th>Agent</th><th>Version</th><th>Disk Free</th><th>Status</th><th>🔗 Tailscale</th><th>Last Seen</th><th>Actions</th></tr></thead>
         <tbody>
           ${machines.length ? machines.map(m => `
             <tr>
@@ -649,8 +657,16 @@ async function renderMachines(el) {
               <td class="mono">${esc(m.agent_version||'—')}</td>
               <td style="color:${m.disk_free_gb < 5 ? 'var(--danger)' : 'var(--success)'}">${m.disk_free_gb != null ? m.disk_free_gb + ' GB' : '—'}</td>
               <td><span class="dot dot-${m.online ? 'online' : 'offline'}"></span>${m.online ? '<span style="color:var(--success)">Online</span>' : 'Offline'}</td>
+              <td id="ts-cell-${m.machine_id}">${m.tailscale_connected
+                ? `<span style="color:#00ccff;font-size:12px" title="${esc(m.tailscale_ip||'')}">🔒 ${esc(m.tailscale_ip||'connected')}</span>`
+                : `<span style="color:var(--muted);font-size:12px">—</span>`}</td>
               <td style="color:var(--muted);font-size:12px">${m.last_seen?.slice(0,16)||'—'}</td>
-              <td><button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button></td>
+              <td>
+                <button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button>
+                ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#00ccff;margin-left:4px" onclick="navigator.clipboard.writeText('${m.tailscale_ip||''}')" title="Copy Tailscale IP">TS IP</button>` : ''}
+              </td>
+            </tr>
+          `).join('') : `<tr><td colspan="10"><div class="empty">No machines connected yet</div></td></tr>`}
             </tr>
           `).join('') : `<tr><td colspan="9"><div class="empty">No machines connected yet</div></td></tr>`}
         </tbody>
@@ -773,6 +789,15 @@ function connectAdminSocket() {
     // Live dashboard refresh on connect/disconnect
     if ((event.type === 'machine_online' || event.type === 'machine_offline') && currentPage === 'dashboard') {
       loadPage('dashboard');
+    }
+    // Live Tailscale badge update — no full page reload needed
+    if (event.type === 'machine_info_updated') {
+      const cell = document.getElementById('ts-cell-' + event.machine_id);
+      if (cell) {
+        cell.innerHTML = event.tailscale_connected
+          ? `<span style="color:#00ccff;font-size:12px" title="${event.tailscale_ip||''}">🔒 ${event.tailscale_ip||'connected'}</span>`
+          : `<span style="color:var(--muted);font-size:12px">—</span>`;
+      }
     }
   });
 }

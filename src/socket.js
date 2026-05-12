@@ -58,10 +58,14 @@ function initSocket(httpServer) {
       db.prepare(`
         INSERT INTO machines (machine_id, hostname, os, os_release, architecture,
           agent_type, agent_version, hermes_version, docker_container,
-          disk_total_gb, disk_free_gb, last_seen, connected_at, online)
+          disk_total_gb, disk_free_gb,
+          tailscale_ip, tailscale_connected,
+          last_seen, connected_at, online)
         VALUES (@machine_id, @hostname, @os, @os_release, @architecture,
           @agent_type, @agent_version, @hermes_version, @docker_container,
-          @disk_total_gb, @disk_free_gb, datetime('now'), @connected_at, 1)
+          @disk_total_gb, @disk_free_gb,
+          @tailscale_ip, @tailscale_connected,
+          datetime('now'), @connected_at, 1)
         ON CONFLICT(machine_id) DO UPDATE SET
           hostname = excluded.hostname,
           os = excluded.os,
@@ -72,24 +76,38 @@ function initSocket(httpServer) {
           docker_container = excluded.docker_container,
           disk_total_gb = excluded.disk_total_gb,
           disk_free_gb = excluded.disk_free_gb,
+          tailscale_ip = excluded.tailscale_ip,
+          tailscale_connected = excluded.tailscale_connected,
           last_seen = datetime('now'),
           online = 1
       `).run({
-        machine_id:       mid,
-        hostname:         info.hostname || null,
-        os:               info.os || null,
-        os_release:       info.os_release || null,
-        architecture:     info.architecture || null,
-        agent_type:       info.agent_type || null,
-        agent_version:    info.agent_version || null,
-        hermes_version:   info.hermes_version || null,
-        docker_container: info.docker_container || null,
-        disk_total_gb:    info.disk_total_gb || null,
-        disk_free_gb:     info.disk_free_gb || null,
-        connected_at:     info.connected_at || new Date().toISOString(),
+        machine_id:          mid,
+        hostname:            info.hostname || null,
+        os:                  info.os || null,
+        os_release:          info.os_release || null,
+        architecture:        info.architecture || null,
+        agent_type:          info.agent_type || null,
+        agent_version:       info.agent_version || null,
+        hermes_version:      info.hermes_version || null,
+        docker_container:    info.docker_container || null,
+        disk_total_gb:       info.disk_total_gb || null,
+        disk_free_gb:        info.disk_free_gb || null,
+        tailscale_ip:        info.tailscale_ip || null,
+        tailscale_connected: info.tailscale_connected ? 1 : 0,
+        connected_at:        info.connected_at || new Date().toISOString(),
       });
 
-      console.log(`[socket] machine_info from ${mid} (${info.hostname})`);
+      console.log(`[socket] machine_info from ${mid} (${info.hostname}) ts=${info.tailscale_ip || 'none'}`);
+
+      // Push updated machine info to admin browsers (so Tailscale badge updates live)
+      broadcast({
+        type:               "machine_info_updated",
+        machine_id:         mid,
+        tailscale_ip:       info.tailscale_ip || null,
+        tailscale_connected: info.tailscale_connected || false,
+        hostname:           info.hostname || null,
+        agent_version:      info.agent_version || null,
+      });
     });
 
     // ── error report ──────────────────────────────────────────────────────

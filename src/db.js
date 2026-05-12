@@ -48,6 +48,8 @@ db.exec(`
     docker_container TEXT,
     disk_total_gb REAL,
     disk_free_gb  REAL,
+    tailscale_ip        TEXT,
+    tailscale_connected INTEGER DEFAULT 0,
     last_seen    TEXT,
     connected_at TEXT,
     online       INTEGER DEFAULT 0
@@ -78,5 +80,14 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_events_created ON events(created_at);
   CREATE INDEX IF NOT EXISTS idx_machines_client ON machines(client_id);
 `);
+
+// ── Migrations: add new columns to existing DBs without wiping data ──────────
+const migrations = [
+  `ALTER TABLE machines ADD COLUMN tailscale_ip TEXT`,
+  `ALTER TABLE machines ADD COLUMN tailscale_connected INTEGER DEFAULT 0`,
+];
+for (const sql of migrations) {
+  try { db.exec(sql); } catch (_) { /* column already exists — safe to ignore */ }
+}
 
 module.exports = db;
