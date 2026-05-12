@@ -419,6 +419,38 @@
   </div>
 </div>
 
+<!-- REPAIR MODAL -->
+<div id="modal-repair" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>🔧 AI Repair — <span id="repair-machine-name"></span></h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
+      KiloClaw will SSH into this machine, diagnose the problem, apply fixes, and report back.
+    </p>
+    <div class="form-group">
+      <label>What's the problem?</label>
+      <select id="repair-preset" onchange="document.getElementById('repair-problem').value=this.value">
+        <option value="">-- choose preset or type below --</option>
+        <option value="Hermes crashed and won't restart">Hermes crashed / won't restart</option>
+        <option value="Agent Zero container is down">Agent Zero container is down</option>
+        <option value="Disk is full or nearly full">Disk is full or nearly full</option>
+        <option value="Python or pip is broken">Python / pip broken</option>
+        <option value="Liberty Agent stopped reporting">Liberty Agent stopped reporting</option>
+        <option value="No internet connection">No internet connection</option>
+        <option value="General health check and repair">General health check and repair</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Or describe in your own words</label>
+      <input type="text" id="repair-problem" placeholder="e.g. 'hermes keeps crashing every hour'" />
+    </div>
+    <div id="repair-output-area"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-repair')">Close</button>
+      <button class="btn btn-primary" style="background:#ff9f43;border-color:#ff9f43" onclick="runRepair()">🔧 Run Repair</button>
+    </div>
+  </div>
+</div>
+
 <!-- COMMAND MODAL -->
 <div id="modal-command" class="modal-overlay hidden">
   <div class="modal">
@@ -601,6 +633,7 @@ async function viewClient(id) {
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button>
                 ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#00ccff;margin-left:4px" onclick="navigator.clipboard.writeText('${m.tailscale_ip||''}')" title="Copy Tailscale IP">TS IP</button>` : ''}
+                ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#ff9f43;margin-left:4px" onclick="openRepairModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}','${esc(m.agent_type||'hermes')}')" title="AI Repair">🔧 Repair</button>` : ''}
               </td>
             </tr>
           `).join('') : `<tr><td colspan="10"><div class="empty">No machines connected yet</div></td></tr>`}
@@ -664,6 +697,7 @@ async function renderMachines(el) {
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openCmdModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}')" ${m.online?'':'disabled'}>CMD</button>
                 ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#00ccff;margin-left:4px" onclick="navigator.clipboard.writeText('${m.tailscale_ip||''}')" title="Copy Tailscale IP">TS IP</button>` : ''}
+                ${m.tailscale_connected ? `<button class="btn btn-ghost btn-sm" style="color:#ff9f43;margin-left:4px" onclick="openRepairModal('${m.machine_id}','${esc(m.hostname||m.machine_id.slice(0,8))}','${esc(m.agent_type||'hermes')}')" title="AI Repair">🔧 Repair</button>` : ''}
               </td>
             </tr>
           `).join('') : `<tr><td colspan="10"><div class="empty">No machines connected yet</div></td></tr>`}
@@ -710,6 +744,56 @@ function renderTerminal(el) {
 }
 
 // ── Command Modal ──────────────────────────────────────────────────────────
+// ── Repair Modal ───────────────────────────────────────────────────
+let repairMachineId = '';
+let repairAgentType = 'hermes';
+
+function openRepairModal(machineId, name, agentType) {
+  repairMachineId = machineId;
+  repairAgentType = agentType || 'hermes';
+  document.getElementById('repair-machine-name').textContent = name;
+  document.getElementById('repair-problem').value = '';
+  document.getElementById('repair-preset').value = '';
+  document.getElementById('repair-output-area').innerHTML = '';
+  openModal('modal-repair');
+}
+
+async function runRepair() {
+  const problem = document.getElementById('repair-problem').value.trim()
+    || document.getElementById('repair-preset').value
+    || 'General health check and repair';
+  const area = document.getElementById('repair-output-area');
+
+  area.innerHTML = `
+    <div class="cmd-output" style="border-left:3px solid #ff9f43;padding:12px;margin-top:12px">
+      <div style="color:#ff9f43;font-weight:600;margin-bottom:8px">⏳ KiloClaw is working on it...</div>
+      <div style="color:var(--muted);font-size:12px">Connecting via Tailscale → Diagnosing → Applying fixes</div>
+      <div style="color:var(--muted);font-size:11px;margin-top:6px">This may take 30–90 seconds depending on what needs fixing.</div>
+    </div>`;
+
+  const res = await api('/machines/' + repairMachineId + '/repair', {
+    method: 'POST',
+    body: { problem }
+  });
+
+  if (!res?.ok) {
+    area.innerHTML = `<div class="cmd-output" style="color:var(--danger);border-left:3px solid var(--danger);padding:12px;margin-top:12px">
+      ❌ ${esc(res?.error || 'Repair request failed')}
+    </div>`;
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="cmd-output" style="border-left:3px solid #00ccff;padding:12px;margin-top:12px">
+      <div style="color:#00ccff;font-weight:600;margin-bottom:8px">✅ Repair task queued</div>
+      <div style="font-size:12px">Machine: <strong>${esc(res.task?.hostname || repairMachineId)}</strong></div>
+      <div style="font-size:12px">Problem: <em>${esc(problem)}</em></div>
+      <div style="font-size:12px">Tailscale IP: <span style="color:#00ccff">${esc(res.task?.tailscale_ip || '—')}</span></div>
+      <div style="color:var(--muted);font-size:11px;margin-top:8px">KiloClaw will SSH in and report back shortly. Check the Events log for the repair report.</div>
+    </div>`;
+}
+
+// ── Command Modal ──────────────────────────────────────────────────
 function openCmdModal(machineId, name) {
   cmdMachineId = machineId;
   document.getElementById('cmd-machine-name').textContent = name;

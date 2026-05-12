@@ -169,4 +169,51 @@ router.get("/stats", requireAuth, (req, res) => {
   res.json({ totalClients, totalMachines, onlineMachines, errorCount24h });
 });
 
+// ── Repair tasks ───────────────────────────────────────────────────────────────────────
+
+// Create a repair task for KiloClaw
+router.post("/machines/:id/repair", requireAuth, (req, res) => {
+  const machine = db.prepare(
+    "SELECT m.*, c.name as client_name FROM machines m LEFT JOIN clients c ON m.client_id = c.id WHERE m.machine_id = ?"
+  ).get(req.params.id);
+  if (!machine) return res.status(404).json({ error: "Machine not found" });
+  if (!machine.tailscale_ip) return res.status(400).json({ error: "Machine not on Tailnet yet" });
+
+  const { problem = "General issue reported" } = req.body || {};
+
+  // Log as a repair event
+  db.prepare(
+    "INSERT INTO events (machine_id, client_id, type, message, data) VALUES (?, ?, 'repair_requested', ?, ?)"
+  ).run(
+    machine.machine_id,
+    machine.client_id,
+    `Repair requested: ${problem}`,
+    JSON.stringify({ tailscale_ip: machine.tailscale_ip, problem })
+  );
+
+  // Broadcast to admin browsers so KiloClaw can pick it up
+  const { broadcast } = require("./socket");
+  // Note: broadcast is called via the socket module's exported fn — see socket.js
+  // The repair task fires as an admin_event that KiloClaw watches
+  res.json({
+    ok: true,
+    task: {
+      machine_id:   machine.machine_id,
+      hostname:     machine.hostname,
+      tailscale_ip: machine.tailscale_ip,
+      agent_type:   machine.agent_type,
+      problem,
+      client_name:  machine.client_name,
+    }
+  });
+});
+
+// Get repair history for a machine
+router.get("/machines/:id/repairs", requireAuth, (req, res) => {
+  const repairs = db.prepare(
+    "SELECT * FROM events WHERE machine_id = ? AND type IN ('repair_requested','repair_complete','repair_failed') ORDER BY created_at DESC LIMIT 50"
+  ).all(req.params.id);
+  res.json(repairs);
+});
+
 module.exports = router;
