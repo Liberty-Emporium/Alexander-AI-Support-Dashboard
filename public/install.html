@@ -162,6 +162,15 @@
     .az .agent-pick-btn:hover { background: var(--cyan); color: #000; }
     .hw .agent-pick-btn { background: rgba(180,111,255,0.12); color: var(--purple); border: 1px solid rgba(180,111,255,0.3); }
     .hw .agent-pick-btn:hover { background: var(--purple); color: #000; }
+    .agent-pick-card.ha:hover,
+    .agent-pick-card.ha.selected {
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 1px #ff6b35, 0 8px 32px rgba(255,107,53,0.18);
+    }
+    .ha .agent-pick-emoji { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.25); }
+    .ha .agent-pick-features li::before { color: #ff6b35; background: rgba(255,107,53,0.1); }
+    .ha .agent-pick-btn { background: rgba(255,107,53,0.12); color: #ff6b35; border: 1px solid rgba(255,107,53,0.3); }
+    .ha .agent-pick-btn:hover { background: #ff6b35; color: #000; }
 
     /* ══════════════════════════════════════════
        OS PICKER — Step 2
@@ -183,6 +192,8 @@
     .os-pick-card.hw-os.selected { border-color: var(--purple); background: var(--dark-purple); box-shadow: 0 0 30px rgba(180,111,255,0.1); }
     .os-pick-card.az-os:hover { border-color: rgba(0,229,255,0.4); }
     .os-pick-card.hw-os:hover { border-color: rgba(180,111,255,0.4); }
+    .os-pick-card.ha-os.selected { border-color: #ff6b35; background: rgba(255,107,53,0.08); box-shadow: 0 0 30px rgba(255,107,53,0.1); }
+    .os-pick-card.ha-os:hover { border-color: rgba(255,107,53,0.4); }
     .os-icon { font-size: 36px; display: block; margin-bottom: 10px; }
     .os-name { font-size: 15px; font-weight: 700; color: var(--text); }
 
@@ -265,6 +276,13 @@
     .tip-box strong { color: var(--text); }
     .tip-box a { color: var(--cyan); }
     .hw-tip a { color: var(--purple); }
+    .ha-step .step-num { background: rgba(255,107,53,0.12); color: #ff6b35; border: 1px solid rgba(255,107,53,0.2); }
+    .ha-cmd { background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.2); }
+    .ha-cmd code { color: #ff6b35; }
+    .ha-cmd .cmd-copy { background: rgba(255,107,53,0.08); color: #ff6b35; border-left: 1px solid rgba(255,107,53,0.15); }
+    .ha-cmd .cmd-copy:hover { background: #ff6b35; color: #000; }
+    .ha-tip { background: rgba(255,107,53,0.06); border-left: 3px solid rgba(255,107,53,0.4); }
+    .ha-tip a { color: #ff6b35; }
 
     /* Help footer */
     .help-footer {
@@ -284,6 +302,7 @@
     }
     .az-help .help-btn { background: var(--cyan); color: #000; }
     .hw-help .help-btn { background: var(--purple); color: #000; }
+    .ha-help .help-btn { background: #ff6b35; color: #000; }
     .help-btn:hover { transform: translateY(-1px); opacity: .9; }
 
     /* ══════════════════════════════════════════
@@ -376,6 +395,24 @@
           <li>Pre-configured by us — ready to go</li>
         </ul>
         <button class="agent-pick-btn">Install Hermes →</button>
+      </div>
+
+      <!-- Hermes Agent -->
+      <div class="agent-pick-card ha" onclick="pickAgent('ha')">
+        <div class="agent-pick-top">
+          <div class="agent-pick-emoji">⚡</div>
+          <div>
+            <div class="agent-pick-name">Hermes Agent</div>
+            <div class="agent-pick-tagline">Self-improving AI with built-in learning loop</div>
+          </div>
+        </div>
+        <ul class="agent-pick-features">
+          <li>Learns & creates skills from your conversations</li>
+          <li>Telegram, Discord, Slack & WhatsApp gateway</li>
+          <li>200+ AI models — switch anytime, no lock-in</li>
+          <li>Pre-configured by us with remote support</li>
+        </ul>
+        <button class="agent-pick-btn">Install Hermes Agent →</button>
       </div>
 
     </div>
@@ -557,6 +594,96 @@ var STEPS = {
         body: "Go to <strong>Settings → Providers</strong> inside Hermes.",
         tip: "💡 <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
       }
+  linux: [
+      {
+        title: "Open a Terminal",
+        body: "Press <strong>Ctrl + Alt + T</strong>."
+      },
+      {
+        title: "Run the installer",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/install.sh | bash",
+        tip: "💡 Paste with <strong>Ctrl + Shift + V</strong>. Wait for <strong>\"Install complete!\"</strong>."
+      },
+      {
+        title: "Start Hermes",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/Hermes-Workspace-Alexander-AI/main/start-hermes.sh | bash",
+        tip: "✅ Hermes opens at <strong>http://localhost:3000</strong>"
+      },
+      {
+        title: "Add your AI API key",
+        body: "Go to <strong>Settings → Providers</strong> inside Hermes.",
+        tip: "💡 <a href='https://cal.com/leprograms/discovery-call' target='_blank'>Book a call</a> — Jay sets this up for you."
+      }
+    ]
+  },
+  ha: {
+    win: [
+      {
+        title: "Open PowerShell as Administrator",
+        body: "Click the Windows <strong>Start button</strong> → type <strong>PowerShell</strong> → right-click → <strong>Run as Administrator</strong>."
+      },
+      {
+        title: "Run the official Hermes Agent installer",
+        body: "This installs everything automatically — uv, Python 3.11, Node.js, and Hermes Agent.",
+        cmd: "irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex",
+        tip: "💡 To paste: <strong>right-click</strong> inside the window or press <strong>Ctrl + V</strong>. This takes 3–5 minutes."
+      },
+      {
+        title: "Wait for the install to finish",
+        body: "You'll see text scrolling — that's normal. Wait until you see the install complete message.",
+        tip: "⚠️ Don't close the window while it's running."
+      },
+      {
+        title: "Start Hermes Agent",
+        body: "Once installed, open a <strong>new</strong> terminal and run:",
+        cmd: "hermes",
+        tip: "✅ Hermes Agent will start and you can begin chatting! Run <strong>hermes setup</strong> to configure your API key."
+      }
+    ],
+    mac: [
+      {
+        title: "Open Terminal",
+        body: "Press <strong>Command (⌘) + Space</strong> → type <strong>Terminal</strong> → press Enter."
+      },
+      {
+        title: "Run the Alexander AI installer — paste this and press Enter",
+        body: "This installs Hermes Agent + sets up your OpenRouter API key + installs the Liberty Agent remote support service.",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/hermes-agent/main/scripts/install-alexander-ai.sh | bash",
+        tip: "💡 Paste with <strong>Command (⌘) + V</strong>. Takes 3–5 minutes."
+      },
+      {
+        title: "Reload your shell",
+        body: "When the installer finishes, run this to make the <strong>hermes</strong> command available:",
+        cmd: "source ~/.bashrc || source ~/.zshrc",
+        tip: "💡 On macOS this is usually <strong>source ~/.zshrc</strong>"
+      },
+      {
+        title: "Start Hermes Agent",
+        cmd: "hermes",
+        tip: "✅ Hermes Agent is running! Run <strong>hermes setup</strong> if you want to configure additional options."
+      }
+    ],
+    linux: [
+      {
+        title: "Open a Terminal",
+        body: "Press <strong>Ctrl + Alt + T</strong>."
+      },
+      {
+        title: "Run the Alexander AI installer",
+        body: "Installs Hermes Agent + OpenRouter API key + Liberty Agent remote support.",
+        cmd: "curl -fsSL https://raw.githubusercontent.com/Liberty-Emporium/hermes-agent/main/scripts/install-alexander-ai.sh | bash",
+        tip: "💡 Paste with <strong>Ctrl + Shift + V</strong>. Wait for the install complete message."
+      },
+      {
+        title: "Reload your shell",
+        cmd: "source ~/.bashrc",
+        tip: "This makes the <strong>hermes</strong> command available."
+      },
+      {
+        title: "Start Hermes Agent",
+        cmd: "hermes",
+        tip: "✅ Hermes Agent is running and Liberty Agent is watching in the background. 🟢"
+      }
     ]
   }
 };
@@ -571,7 +698,7 @@ var OS_LABELS = {
 
 function pickAgent(agent) {
   currentAgent = agent;
-  var col = agent === 'az' ? 'var(--cyan)' : 'var(--purple)';
+  var col = agent === 'az' ? 'var(--cyan)' : (agent === 'ha' ? '#ff6b35' : 'var(--purple)');
   // Breadcrumb
   document.getElementById('bc1').classList.remove('active');
   document.getElementById('bc1').classList.add('done');
@@ -584,7 +711,7 @@ function pickAgent(agent) {
   grid.innerHTML = '';
   ['win','mac','linux'].forEach(function(os) {
     var btn = document.createElement('button');
-    btn.className = 'os-pick-card ' + (agent === 'az' ? 'az-os' : 'hw-os');
+    btn.className = 'os-pick-card ' + (agent === 'az' ? 'az-os' : (agent === 'ha' ? 'ha-os' : 'hw-os'));
     btn.innerHTML = '<span class="os-icon">' + OS_LABELS[os].icon + '</span><span class="os-name">' + OS_LABELS[os].name + '</span>';
     btn.onclick = function() { pickOS(os); };
     grid.appendChild(btn);
@@ -609,11 +736,11 @@ function pickOS(os) {
 
 function buildSteps(agent, os) {
   var steps = STEPS[agent][os];
-  var col = agent === 'az' ? 'az' : 'hw';
+  var col = agent === 'az' ? 'az' : (agent === 'ha' ? 'ha' : 'hw');
   var stepClass = col + '-step';
   var cmdClass = col + '-cmd';
   var tipClass = col + '-tip';
-  var heading = (agent === 'az' ? '🤖 Agent Zero' : '🪄 Hermes Workspace')
+  var heading = (agent === 'az' ? '🤖 Agent Zero' : (agent === 'ha' ? '⚡ Hermes Agent' : '🪄 Hermes Workspace'))
     + ' — ' + OS_LABELS[os].icon + ' ' + OS_LABELS[os].name + ' Install Steps';
   document.getElementById('step3-heading').textContent = heading;
 
