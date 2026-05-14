@@ -101,9 +101,10 @@
 
     /* ── AGENT PICK CARDS ── */
     .agent-pick-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
       margin-bottom: 0;
     }
+    @media (max-width: 860px) { .agent-pick-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .agent-pick-grid { grid-template-columns: 1fr; } }
 
     .agent-pick-card {
