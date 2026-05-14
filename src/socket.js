@@ -35,10 +35,13 @@ function initSocket(httpServer) {
     activeSockets.set(machineId, socket);
     console.log(`[socket] +CONNECT  ${machineId}`);
 
-    // Mark online
+    // Ensure machine row exists before logging events (prevents FOREIGN KEY constraint error)
     db.prepare(`
-      UPDATE machines SET online = 1, last_seen = datetime('now')
-      WHERE machine_id = ?
+      INSERT INTO machines (machine_id, online, last_seen, connected_at)
+      VALUES (?, 1, datetime('now'), datetime('now'))
+      ON CONFLICT(machine_id) DO UPDATE SET
+        online = 1,
+        last_seen = datetime('now')
     `).run(machineId);
 
     // Log connect event
