@@ -1,2 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "python3", "gnumake", "gcc"]
+nixPkgs = ["nodejs_20", "python3", "gnumake", "gcc12"]
+
+[phases.install]
+cmds = ["npm ci --prefer-offline"]
