@@ -385,6 +385,9 @@
     <a onclick="showPage('terminal')" id="nav-terminal">
       <span class="icon">⌨</span> Terminal
     </a>
+    <a onclick="showPage('contracts')" id="nav-contracts">
+      <span class="icon">📄</span> Contracts
+    </a>
 
   </nav>
   <div class="sidebar-footer">
@@ -555,6 +558,7 @@ async function loadPage(page) {
   else if (page === 'machines') await renderMachines(content);
   else if (page === 'events')   await renderEvents(content);
   else if (page === 'terminal') renderTerminal(content);
+  else if (page === 'contracts') renderContracts(content);
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
@@ -846,6 +850,113 @@ async function runCommand() {
     }
   }
   adminSocket.on('admin_event', onResult);
+}
+
+// ── Contracts ──────────────────────────────────────────────────────────────
+const CONTRACTS = [
+  {
+    id: 'serenity-massage',
+    name: 'Serenity Therapeutic Massage Spa',
+    type: 'Website Services Agreement',
+    client: 'Angela Roush',
+    value: '$3,000',
+    status: 'pending',
+    signedBy: [],
+    dateCreated: '2026-06-11',
+    description: 'Website design, development, and hosting. $1,000 down + $200/month x 10 months. 4% interest on past-due balances. $20/month hosting after project paid off.',
+    contractUrl: '/contracts/serenity-massage.html'
+  },
+  {
+    id: 'sweet-spot',
+    name: 'Sweet Spot Cakes',
+    type: 'Website Services Agreement',
+    client: 'Pete Hall',
+    value: '$3,000',
+    status: 'completed',
+    signedBy: ['Jay Alexander', 'Pete Hall'],
+    dateCreated: '2026-06-08',
+    description: 'Full-service bakery website. Custom design, professional layout, mobile-responsive. One-time payment.',
+    contractUrl: '/contracts/sweet-spot.html'
+  }
+];
+
+function renderContracts(el) {
+  document.getElementById('header-actions').innerHTML =
+    `<button class="btn btn-primary btn-sm" onclick="openAddContractModal()">+ New Contract</button>`;
+
+  let html = `<div class="card"><table><thead><tr>
+    <th>Contract</th><th>Client</th><th>Value</th><th>Status</th><th>Signed By</th><th>Actions</th>
+  </tr></thead><tbody>`;
+
+  for (const c of CONTRACTS) {
+    const statusColor = c.status === 'completed' ? 'var(--success)' : c.status === 'pending' ? 'var(--warning)' : 'var(--muted)';
+    const statusIcon = c.status === 'completed' ? '✅' : c.status === 'pending' ? '⏳' : '📝';
+    const signedDisplay = c.signedBy.length > 0 ? c.signedBy.join(', ') : '<span style="color:var(--muted)">—</span>';
+
+    html += `<tr>
+      <td><strong>${esc(c.name)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(c.type)}</span></td>
+      <td>${esc(c.client)}</td>
+      <td style="color:var(--success);font-weight:600">${esc(c.value)}</td>
+      <td style="color:${statusColor}">${statusIcon} ${esc(c.status.charAt(0).toUpperCase() + c.status.slice(1))}</td>
+      <td style="font-size:12px">${signedDisplay}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openContract('${c.id}')">📄 Open</button>
+        ${c.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="sendContract('${c.id}')">📤 Send</button>` : ''}
+      </td>
+    </tr>`;
+  }
+
+  html += `</tbody></table></div>`;
+
+  // Contract signing area
+  html += `<div id="contract-workspace" style="margin-top:24px"></div>`;
+
+  el.innerHTML = html;
+}
+
+function openContract(id) {
+  const c = CONTRACTS.find(x => x.id === id);
+  if (!c) return;
+  const ws = document.getElementById('contract-workspace');
+  ws.innerHTML = `
+    <div class="card" style="padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <h3 style="font-size:16px;margin-bottom:4px">${esc(c.name)} — ${esc(c.type)}</h3>
+          <div style="color:var(--muted);font-size:13px">Client: ${esc(c.client)} | Value: <span style="color:var(--success)">${esc(c.value)}</span> | Created: ${esc(c.dateCreated)}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('contract-workspace').innerHTML=''">✕ Close</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:20px">${esc(c.description)}</p>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+        <iframe src="${esc(c.contractUrl)}" style="width:100%;height:600px;border:1px solid var(--border);border-radius:8px;background:white" title="Contract"></iframe>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="downloadContractPDF('${id}')">📄 Download as PDF</button>
+        ${c.status === 'pending' ? `<button class="btn btn-primary" onclick="sendContract('${id}')">📤 Send to ${esc(c.client)}</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function sendContract(id) {
+  const c = CONTRACTS.find(x => x.id === id);
+  if (!c) return;
+  // Generate the signing link
+  const signUrl = `${location.origin}/contracts/${id}/sign`;
+  prompt(`Send this link to ${c.client} for signing:\n\n${signUrl}\n\n(Copy and paste into text/email)`, signUrl);
+}
+
+function downloadContractPDF(id) {
+  const c = CONTRACTS.find(x => x.id === id);
+  if (!c) return;
+  // Open the contract in a new window for printing to PDF
+  const win = window.open(c.contractUrl, '_blank');
+  win.onload = () => { setTimeout(() => win.print(), 1000); };
+}
+
+function openAddContractModal() {
+  alert('New contract form — coming soon. For now, add contracts to the CONTRACTS array in the code.');
 }
 
 // ── Modals ─────────────────────────────────────────────────────────────────

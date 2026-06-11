@@ -40,6 +40,24 @@ app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
+// ── Contracts ────────────────────────────────────────────────────────────────
+app.get("/contracts/:id", (req, res) => {
+  const contractFile = path.join(__dirname, `../public/contracts/${req.params.id}.html`);
+  if (require("fs").existsSync(contractFile)) {
+    res.sendFile(contractFile);
+  } else {
+    res.status(404).send("Contract not found");
+  }
+});
+app.get("/contracts/:id/sign", (req, res) => {
+  const contractFile = path.join(__dirname, `../public/contracts/${req.params.id}.html`);
+  if (require("fs").existsSync(contractFile)) {
+    res.sendFile(contractFile);
+  } else {
+    res.status(404).send("Contract not found");
+  }
+});
+
 // ── Static assets (JS, CSS, images, etc.) ────────────────────────────────────
 // index: false prevents express.static from auto-serving index.html for /
 app.use(express.static(path.join(__dirname, "../public"), { index: false }));

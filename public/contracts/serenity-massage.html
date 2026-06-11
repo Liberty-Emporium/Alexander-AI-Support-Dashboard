@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Serenity Massage - Website Services Agreement</title>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Helvetica, Arial, sans-serif; color: #333; font-size: 10pt; line-height: 1.4; background: #e8e8e8; }
+
+.page { width: 8.5in; margin: 20px auto; background: white; padding: 0.75in; box-shadow: 0 2px 10px rgba(0,0,0,0.15); min-height: 11in; position: relative; }
+.header-bar { background: #1A237E; height: 6px; margin: -0.75in -0.75in 8px -0.75in; }
+.gold-line { background: #D4AF37; height: 1px; margin-bottom: 10px; }
+h1 { font-size: 22pt; text-align: center; color: #1A237E; margin: 6px 0; }
+.section-head { font-size: 12pt; font-weight: bold; color: #1A237E; margin-top: 14px; margin-bottom: 3px; }
+.section-head::after { content: ''; display: block; width: 50px; height: 2px; background: #D4AF37; margin-top: 2px; }
+p { margin-bottom: 4px; text-align: justify; }
+ul { margin-left: 20px; margin-bottom: 4px; }
+li { margin-bottom: 2px; }
+.payment-table { width: 100%; border-collapse: collapse; margin: 6px 0; background: #F5F5FA; }
+.payment-table td { padding: 5px 14px; border: 0.5px solid #CCCCDD; font-size: 10pt; }
+.payment-table td:last-child { color: #1A237E; font-weight: bold; text-align: right; }
+.payment-table tr:last-child td { font-weight: bold; }
+.summary-box { background: #F5F5FA; border: 0.5px solid #1A237E; padding: 8px 12px; text-align: center; font-size: 7pt; color: #666; margin-top: 10px; }
+
+.cover { text-align: center; padding-top: 60px; }
+.cover .gold-divider { width: 60%; margin: 10px auto; height: 1.5px; background: #D4AF37; }
+.cover .gold-divider.thin { width: 40%; height: 0.8px; }
+.cover .subtitle { font-size: 12pt; color: #666; }
+.cover .parties { margin-top: 30px; }
+.cover .parties .between { font-size: 10pt; color: #999; margin: 10px 0; }
+.cover .parties .party-name { font-size: 13pt; font-weight: bold; color: #1A237E; }
+.cover .parties .party-role { font-size: 10pt; color: #666; }
+.cover .effective-date { margin-top: 40px; font-size: 9pt; color: #999; }
+
+/* Top bar showing signing progress */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: #1A237E; color: white; padding: 10px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10pt;
+}
+.top-bar .status { display: flex; gap: 16px; }
+.top-bar .status-item { display: flex; align-items: center; gap: 4px; }
+.top-bar .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
+.top-bar .status-dot.done { background: #4CAF50; }
+.top-bar .status-dot.pending { background: #D4AF37; }
+
+.sig-instructions { text-align: center; font-size: 10pt; margin: 8px 0; }
+.sig-container { display: flex; gap: 24px; margin-top: 12px; }
+
+.sig-field {
+  flex: 1; border: 2px solid #1A237E; border-radius: 4px;
+  overflow: hidden; cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s; background: white;
+}
+.sig-field:hover { box-shadow: 0 0 0 3px rgba(26,35,126,0.15); border-color: #D4AF37; }
+.sig-field.signed { border-color: #4CAF50; box-shadow: 0 0 0 2px rgba(76,175,80,0.2); }
+.sig-field.locked { opacity: 0.7; cursor: not-allowed; }
+
+.sig-field-header {
+  background: #1A237E; color: white; padding: 6px 10px;
+  font-size: 8pt; font-weight: bold; text-transform: uppercase;
+  letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
+}
+.sig-field.signed .sig-field-header { background: #4CAF50; }
+.sig-field.locked .sig-field-header { background: #666; }
+.sig-field-header .edit-btn, .sig-field-header .lock-icon {
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+  color: white; padding: 2px 8px; border-radius: 3px; font-size: 7pt; cursor: pointer; display: none;
+}
+.sig-field.signed .sig-field-header .edit-btn { display: inline; }
+.sig-field.locked .sig-field-header .lock-icon { display: inline; cursor: default; }
+
+.sig-field-canvas-wrap {
+  height: 80px; display: flex; align-items: center; justify-content: center;
+  background: #FFFEF5; position: relative;
+}
+.sig-field-canvas-wrap .click-prompt {
+  font-size: 11pt; color: #D4AF37; font-weight: bold;
+  display: flex; align-items: center; gap: 6px;
+}
+.sig-field-canvas-wrap canvas { width: 100%; height: 100%; }
+.sig-field.signed .sig-field-canvas-wrap .click-prompt { display: none; }
+.sig-field.locked .sig-field-canvas-wrap { background: #f5f5f5; }
+.sig-field.locked .sig-field-canvas-wrap::after {
+  content: '🔒 Sign after the other party'; font-size: 8pt; color: #999;
+  position: absolute;
+}
+
+.sig-field-meta { padding: 6px 10px; font-size: 7.5pt; color: #666; border-top: 1px solid #eee; }
+.sig-field-meta .role { font-weight: bold; color: #1A237E; font-size: 8.5pt; }
+
+/* Signature overlay */
+.sig-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7); z-index: 9999;
+  justify-content: center; align-items: center;
+}
+.sig-overlay.active { display: flex; }
+.sig-dialog {
+  background: white; border-radius: 8px; width: 680px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden;
+  animation: sigDialogIn 0.2s ease-out;
+}
+@keyframes sigDialogIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.sig-dialog-header {
+  background: #1A237E; color: white; padding: 14px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sig-dialog-header h4 { font-size: 15pt; font-weight: bold; }
+.sig-dialog-header .close-x {
+  background: none; border: none; color: white; font-size: 20pt;
+  cursor: pointer; line-height: 1; padding: 0 4px;
+}
+.sig-dialog-body { padding: 16px 20px; }
+.sig-dialog-body .sig-instruction-text { text-align: center; font-size: 10pt; color: #666; margin-bottom: 10px; }
+
+.sig-canvas-wrapper {
+  border: 2px solid #1A237E; border-radius: 6px; overflow: hidden; background: white; position: relative;
+}
+.sig-canvas-wrapper canvas { display: block; width: 100%; height: 240px; cursor: crosshair; touch-action: none; }
+.sig-canvas-wrapper .canvas-watermark { position: absolute; bottom: 8px; right: 12px; font-size: 9pt; color: #ccc; pointer-events: none; }
+
+.sig-dialog-footer { padding: 12px 20px; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; }
+.sig-dialog-footer .btn-clear { padding: 10px 20px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; font-size: 10pt; color: #666; }
+.sig-dialog-footer .btn-apply { flex: 1; padding: 12px; background: #1A237E; color: white; border: none; border-radius: 4px; font-size: 12pt; font-weight: bold; cursor: pointer; }
+.sig-dialog-footer .btn-apply:disabled { background: #ccc; cursor: not-allowed; }
+
+/* Bottom action bar */
+.action-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 2px solid #1A237E; padding: 12px 20px;
+  display: flex; justify-content: center; gap: 12px; z-index: 99;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+.action-bar button {
+  padding: 12px 24px; font-size: 11pt; font-weight: bold; cursor: pointer;
+  border: none; border-radius: 4px; transition: opacity 0.2s;
+}
+.action-bar button:hover { opacity: 0.9; }
+.action-bar .btn-save { background: #1A237E; color: white; }
+.action-bar .btn-download { background: #4CAF50; color: white; }
+.action-bar .btn-download:disabled { background: #ccc; cursor: not-allowed; }
+.action-bar .btn-reset { background: #f44336; color: white; }
+
+body { padding-bottom: 70px; }
+
+@media print {
+  body { background: white; padding-bottom: 0; }
+  .page { box-shadow: none; margin: 0; }
+  .top-bar, .action-bar, .sig-overlay { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top status bar -->
+<div class="top-bar">
+  <div><b>📄 Website Services Agreement — Serenity Therapeutic Massage Spa</b></div>
+  <div class="status">
+    <div class="status-item"><div class="status-dot" id="dot-jay"></div> Jay (Service Provider)</div>
+    <div class="status-item"><div class="status-dot" id="dot-angela"></div> Angela (Client)</div>
+  </div>
+</div>
+
+<!-- PAGE 1: COVER -->
+<div class="page" id="page-1">
+  <div class="header-bar"></div>
+  <div class="gold-line"></div>
+  <div class="cover">
+    <h1>WEBSITE SERVICES<br>AGREEMENT</h1>
+    <div class="gold-divider"></div>
+    <div class="subtitle">Serenity Therapeutic Massage Spa</div>
+    <div class="subtitle">128 W Swannanoa Ave, Liberty, NC 27298</div>
+    <div class="subtitle">803-287-0064</div>
+    <div class="gold-divider thin"></div>
+    <div class="parties">
+      <div class="between">Between:</div>
+      <div class="party-name">Alexander AI Integrated Solutions (AAIS)</div>
+      <div class="party-role">Service Provider</div>
+      <div class="between">And:</div>
+      <div class="party-name">Angela Roush</div>
+      <div class="party-role">Client / Business Owner</div>
+    </div>
+    <div class="effective-date">Effective Date: _____________________</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page-2" style="margin-top:30px;">
+  <div class="section-head">1. SCOPE OF SERVICES</div>
+  <p>Alexander AI Integrated Solutions ("Provider") agrees to design, develop, and deploy a professional website for Serenity Therapeutic Massage Spa ("Client"). Services include:</p>
+  <ul>
+    <li>Custom website design and development (7 pages)</li>
+    <li>Mobile-responsive layout for all devices</li>
+    <li>Online booking integration via MassageBook</li>
+    <li>Google Maps integration and local SEO setup</li>
+    <li>Contact form and business information</li>
+    <li>Deployment to production with custom domain</li>
+    <li>30 days of post-launch support and bug fixes</li>
+  </ul>
+  <div class="section-head">2. PAYMENT TERMS</div>
+  <p>The total cost for the website project is <b>$3,000.00 (Three Thousand Dollars)</b>.</p>
+  <table class="payment-table">
+    <tr><td>Down Payment (due at signing):</td><td>$1,000.00</td></tr>
+    <tr><td>Monthly Payment:</td><td>$200.00</td></tr>
+    <tr><td>Number of Payments:</td><td>10 months</td></tr>
+    <tr><td>Total Financed Amount:</td><td>$2,000.00</td></tr>
+    <tr><td>Total Project Cost:</td><td>$3,000.00</td></tr>
+  </table>
+  <p>The down payment of $1,000.00 is due upon execution of this agreement. Monthly payments of $200.00 shall begin on the first day of the month following the project start date and continue for ten (10) consecutive months until the financed amount of $2,000.00 is paid in full, for a total project cost of $3,000.00.</p>
+  <div class="section-head">3. INTEREST ON FINANCED AMOUNT</div>
+  <p>Any portion of the financed amount that is not paid in full by the agreed payment schedule shall accrue interest at a rate of <b>four percent (4%) per annum</b>, compounded monthly on the remaining unpaid balance. Interest shall begin accruing on any payment that is more than ten (10) days past due and shall continue until the balance is paid in full.</p>
+  <p>For example: If a monthly payment of $200.00 is 30 days past due, interest at 4% per annum will be calculated on the outstanding balance for the number of days the payment remains unpaid.</p>
+  <div class="section-head">4. LATE PAYMENT POLICY</div>
+  <p>Payments are due on the first (1st) day of each month. A grace period of ten (10) calendar days is provided. Payments received after the grace period will be considered late and subject to the interest terms outlined in Section 3. Provider reserves the right to suspend website hosting services if payment is more than thirty (30) days past due, until all outstanding balances including accrued interest are resolved.</p>
+  <div class="section-head">5. PROJECT TIMELINE</div>
+  <p>Provider will begin work within five (5) business days of receiving the down payment and signed agreement. Estimated project completion is four (4) to six (6) weeks from the start date, subject to timely provision of content and feedback by Client.</p>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page-3" style="margin-top:30px;">
+  <div class="section-head">6. CLIENT RESPONSIBILITIES</div>
+  <p>Client agrees to:</p>
+  <ul>
+    <li>Provide all necessary content (text, images, logos) within 10 days of signing</li>
+    <li>Respond to design mockups and revision requests within 5 business days</li>
+    <li>Set up and maintain domain name and hosting account (if applicable)</li>
+    <li>Maintain MassageBook account for booking integration</li>
+    <li>Review and approve final website before launch</li>
+  </ul>
+  <div class="section-head">7. REVISIONS</div>
+  <p>The project includes up to two (2) rounds of revisions to the initial design. Additional revisions beyond the included two rounds will be billed at $75.00 per hour. Content updates (text, images) after launch are not included in the revision rounds.</p>
+  <div class="section-head">8. INTELLECTUAL PROPERTY</div>
+  <p>Upon receipt of full payment ($3,000.00), all rights, title, and interest in the completed website design shall transfer to Client. Provider retains the right to display the work in their portfolio and marketing materials. Any custom code, frameworks, or libraries developed by Provider and used across multiple projects remain the property of Provider and are licensed to Client for use on this project.</p>
+  <div class="section-head">9. TERMINATION</div>
+  <p>Either party may terminate this agreement with written notice. If Client terminates after work has begun, the down payment is non-refundable and Client is responsible for payment for all work completed to date. If Provider terminates, a pro-rata refund of the down payment for uncompleted work shall be issued.</p>
+  <div class="section-head">10. WARRANTY & SUPPORT</div>
+  <p>Provider warrants that the website will be free from material defects for thirty (30) days following launch. During this period, Provider will correct any bugs or issues at no additional cost. This warranty does not cover issues arising from Client modifications, third-party service changes, or hosting environment problems.</p>
+  <div class="section-head">11. GENERAL PROVISIONS</div>
+  <p>This agreement constitutes the entire understanding between the parties. Any modifications must be made in writing and signed by both parties. This agreement shall be governed by the laws of the State of North Carolina. Any disputes shall be resolved in Randolph County, North Carolina.</p>
+  <div class="section-head">12. MONTHLY HOSTING FEE</div>
+  <p>Upon full payment of the website project cost ($3,000.00), Client agrees to a recurring monthly hosting fee of <b>$20.00 per month</b> for continued website hosting, maintenance, and support services. This hosting fee shall begin on the first day of the month following the completion of the project payment schedule and shall continue on a month-to-month basis until terminated by either party with thirty (30) days written notice.</p>
+  <p>The hosting fee includes: server hosting and uptime monitoring, SSL certificate management, regular software updates and security patches, up to two (2) minor content updates per month, and email support with 48-hour response time. Major feature additions or redesigns are not included and will be quoted separately.</p>
+  <p>Late hosting fees are subject to the same interest terms outlined in Section 3 (four percent per annum, compounded monthly, after a ten-day grace period). Provider reserves the right to suspend hosting services if payment is more than thirty (30) days past due.</p>
+</div>
+
+<!-- PAGE 4: SIGNATURES -->
+<div class="page" id="page-4" style="margin-top:30px;">
+  <h3 style="text-align:center; color:#1A237E; font-size:18pt;">SIGNATURES</h3>
+  <div style="width:40%; margin:4px auto; height:1px; background:#D4AF37;"></div>
+  <p class="sig-instructions">By signing below, both parties acknowledge they have read, understood, and agree to all terms outlined in this agreement.</p>
+  <p class="sig-instructions" style="color:#D4AF37; font-weight:bold; font-size:11pt;">👇 Click each signature field below to sign</p>
+
+  <div class="sig-container">
+    <div class="sig-field" id="sig-field-jay" data-signer="jay">
+      <div class="sig-field-header">
+        <span id="sig-status-jay">✍ Signature Required</span>
+        <button class="edit-btn" id="edit-btn-jay" onclick="event.stopPropagation(); openSignDialog('jay')" style="display:none">Edit</button>
+        <span class="lock-icon" id="lock-icon-jay" style="display:none">🔒</span>
+      </div>
+      <div class="sig-field-canvas-wrap" id="sig-preview-wrap-jay">
+        <div class="click-prompt" id="prompt-jay" style="display:none">✍ Click to Sign</div>
+        <img id="sig-img-jay" style="display:none; max-height:70px; max-width:95%;" />
+      </div>
+      <div class="sig-field-meta">
+        <div class="role">SERVICE PROVIDER</div>
+        <div>Alexander AI Integrated Solutions (AAIS)</div>
+        <div>Name: Jay Alexander &nbsp;&nbsp; Title: Owner</div>
+        <div>Date: <span id="date-jay"></span></div>
+      </div>
+    </div>
+
+    <div class="sig-field" id="sig-field-angela" data-signer="angela">
+      <div class="sig-field-header">
+        <span id="sig-status-angela">✍ Signature Required</span>
+        <button class="edit-btn" id="edit-btn-angela" onclick="event.stopPropagation(); openSignDialog('angela')" style="display:none">Edit</button>
+        <span class="lock-icon" id="lock-icon-angela" style="display:none">🔒</span>
+      </div>
+      <div class="sig-field-canvas-wrap" id="sig-preview-wrap-angela">
+        <div class="click-prompt" id="prompt-angela" style="display:none">✍ Click to Sign</div>
+        <img id="sig-img-angela" style="display:none; max-height:70px; max-width:95%;" />
+      </div>
+      <div class="sig-field-meta">
+        <div class="role">CLIENT</div>
+        <div>Serenity Therapeutic Massage Spa</div>
+        <div>Name: Angela Roush &nbsp;&nbsp; Title: Owner</div>
+        <div>Date: <span id="date-angela"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    PAYMENT SUMMARY: $1,000 down + $200/month x 10 months = $3,000 total | 4% interest on past-due balances | $20/month hosting after project paid in full | This document is legally binding upon signature by both parties.
+  </div>
+</div>
+
+<!-- Bottom action bar -->
+<div class="action-bar">
+  <button class="btn-save" onclick="saveAndDownloadHTML()">💾 Save Signed File (send to next signer)</button>
+  <button class="btn-download" id="btn-download-pdf" onclick="downloadPDF()" disabled>📄 Download Signed PDF</button>
+  <button class="btn-reset" onclick="resetSignatures()">🗑 Reset All</button>
+</div>
+
+<!-- SIGNATURE DIALOG -->
+<div class="sig-overlay" id="sig-overlay" onclick="if(event.target===this)closeSignDialog()">
+  <div class="sig-dialog">
+    <div class="sig-dialog-header">
+      <h4 id="sig-dialog-title">✍ Adopt Your Signature</h4>
+      <button class="close-x" onclick="closeSignDialog()">&times;</button>
+    </div>
+    <div class="sig-dialog-body">
+      <div class="sig-instruction-text">Use your mouse, finger, or stylus to draw your signature below, then click Apply</div>
+      <div class="sig-canvas-wrapper">
+        <canvas id="sig-draw-canvas"></canvas>
+        <div class="canvas-watermark">Sign above</div>
+      </div>
+    </div>
+    <div class="sig-dialog-footer">
+      <button class="btn-clear" onclick="clearSignCanvas()">🗑 Clear</button>
+      <button class="btn-apply" id="btn-apply" onclick="applySignature()" disabled>✓ Apply Signature</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const todayD = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('date-jay').textContent = todayD;
+document.getElementById('date-angela').textContent = todayD;
+
+let sigPad = null;
+let currentSigner = null;
+let savedSignatures = { jay: null, angela: null };
+
+// Check if this is Angela's turn (Jay already signed)
+// If jay's signature exists but angela's doesn't, it's angela's phase
+function initPhase() {
+  // Show prompts for unsigned fields
+  if (!savedSignatures.jay) {
+    document.getElementById('prompt-jay').style.display = 'block';
+    document.getElementById('sig-field-jay').classList.remove('locked');
+    document.getElementById('sig-field-jay').onclick = () => openSignDialog('jay');
+  }
+  if (!savedSignatures.angela) {
+    document.getElementById('prompt-angela').style.display = 'block';
+    // If jay hasn't signed yet, lock angela's field
+    if (!savedSignatures.jay) {
+      document.getElementById('sig-field-angela').classList.add('locked');
+      document.getElementById('sig-field-angela').onclick = null;
+      document.getElementById('lock-icon-angela').style.display = 'inline';
+    } else {
+      document.getElementById('sig-field-angela').classList.remove('locked');
+      document.getElementById('sig-field-angela').onclick = () => openSignDialog('angela');
+      document.getElementById('lock-icon-angela').style.display = 'none';
+    }
+  }
+  updateAllState();
+}
+initPhase();
+
+function updateAllState() {
+  // Jay
+  if (savedSignatures.jay) {
+    document.getElementById('sig-field-jay').classList.add('signed');
+    document.getElementById('sig-status-jay').textContent = '✓ Signed';
+    document.getElementById('edit-btn-jay').style.display = 'inline';
+    document.getElementById('dot-jay').classList.add('done');
+    document.getElementById('sig-img-jay').src = savedSignatures.jay;
+    document.getElementById('sig-img-jay').style.display = 'block';
+    document.getElementById('prompt-jay').style.display = 'none';
+  }
+  // Angela
+  if (savedSignatures.angela) {
+    document.getElementById('sig-field-angela').classList.add('signed');
+    document.getElementById('sig-status-angela').textContent = '✓ Signed';
+    document.getElementById('edit-btn-angela').style.display = 'inline';
+    document.getElementById('dot-angela').classList.add('done');
+    document.getElementById('sig-img-angela').src = savedSignatures.angela;
+    document.getElementById('sig-img-angela').style.display = 'block';
+    document.getElementById('prompt-angela').style.display = 'none';
+  }
+
+  // Unlock angela after jay signs
+  if (savedSignatures.jay && !savedSignatures.angela) {
+    document.getElementById('sig-field-angela').classList.remove('locked');
+    document.getElementById('sig-field-angela').onclick = () => openSignDialog('angela');
+    document.getElementById('lock-icon-angela').style.display = 'none';
+    document.getElementById('prompt-angela').style.display = 'block';
+  }
+
+  // Enable download only when both signed
+  document.getElementById('btn-download-pdf').disabled = !(savedSignatures.jay && savedSignatures.angela);
+}
+
+function openSignDialog(signer) {
+  // Prevent opening if locked
+  if (document.getElementById('sig-field-' + signer).classList.contains('locked')) return;
+
+  currentSigner = signer;
+  document.getElementById('sig-overlay').classList.add('active');
+  document.getElementById('sig-dialog-title').textContent =
+    signer === 'jay' ? '✍ Jay Alexander — Adopt Your Signature' : '✍ Angela Roush — Adopt Your Signature';
+
+  setTimeout(() => {
+    const canvas = document.getElementById('sig-draw-canvas');
+    const wrapper = canvas.parentElement;
+    canvas.width = wrapper.clientWidth;
+    canvas.height = 240;
+
+    sigPad = new SignaturePad(canvas, {
+      backgroundColor: 'rgba(255,255,255,0)',
+      penColor: '#1A237E',
+      minWidth: 1.5,
+      maxWidth: 3.5,
+    });
+
+    if (savedSignatures[signer]) {
+      sigPad.fromDataURL(savedSignatures[signer]);
+      document.getElementById('btn-apply').disabled = false;
+    } else {
+      document.getElementById('btn-apply').disabled = true;
+    }
+
+    sigPad.addEventListener('endStroke', () => {
+      document.getElementById('btn-apply').disabled = sigPad.isEmpty();
+    });
+  }, 100);
+}
+
+function closeSignDialog() {
+  document.getElementById('sig-overlay').classList.remove('active');
+  sigPad = null;
+  currentSigner = null;
+}
+
+function clearSignCanvas() {
+  if (sigPad) { sigPad.clear(); document.getElementById('btn-apply').disabled = true; }
+}
+
+function applySignature() {
+  if (!sigPad || sigPad.isEmpty()) return;
+  savedSignatures[currentSigner] = sigPad.toDataURL('image/png');
+  document.getElementById('date-' + currentSigner).textContent =
+    new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  closeSignDialog();
+  updateAllState();
+}
+
+// Save HTML with signatures embedded — creates a new file to send to next signer
+function saveAndDownloadHTML() {
+  if (!savedSignatures.jay && !savedSignatures.angela) {
+    alert('Sign at least one field first!');
+    return;
+  }
+
+  // Serialize current state
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Serenity_Contract_Signed.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Generate real PDF with both signatures
+async function downloadPDF() {
+  if (!savedSignatures.jay || !savedSignatures.angela) {
+    alert('Both parties must sign before downloading PDF!');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', 'letter');
+  const pages = ['page-1','page-2','page-3','page-4'];
+
+  for (let i = 0; i < pages.length; i++) {
+    if (i > 0) doc.addPage();
+    const el = document.getElementById(pages[i]);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const props = doc.getImageProperties(imgData);
+      const w = doc.internal.pageSize.getWidth();
+      const h = (props.height * w) / props.width;
+      doc.addImage(imgData, 'JPEG', 0, 0, w, h);
+    } catch(e) {
+      console.error('Error rendering page', i+1, e);
+    }
+  }
+
+  doc.save('Serenity_Contract_Signed.pdf');
+}
+
+function resetSignatures() {
+  if (!confirm('Clear all signatures? This cannot be undone.')) return;
+  savedSignatures = { jay: null, angela: null };
+  // Reset UI
+  ['jay','angela'].forEach(s => {
+    document.getElementById('sig-field-'+s).classList.remove('signed');
+    document.getElementById('sig-status-'+s).textContent = '✍ Signature Required';
+    document.getElementById('edit-btn-'+s).style.display = 'none';
+    document.getElementById('dot-'+s).classList.remove('done');
+    document.getElementById('sig-img-'+s).style.display = 'none';
+    document.getElementById('date-'+s).textContent = todayD;
+  });
+  initPhase();
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSignDialog(); });
+</script>
+</body>
+</html>
